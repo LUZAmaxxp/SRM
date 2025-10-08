@@ -1,36 +1,125 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Auth Next
+
+A complete authentication system built with Next.js, Better Auth, and Drizzle ORM.
+
+## Features
+
+- **Sign In / Sign Up**: Email and password authentication
+- **Magic Link**: Passwordless sign-in via email
+- **Email Verification**: Account verification via email
+- **Password Reset**: Secure password reset functionality
+- **Social Login**: Google OAuth integration
+- **Organization Support**: Multi-tenant organization management
+- **Database**: PostgreSQL with Drizzle ORM
 
 ## Getting Started
 
-First, run the development server:
+1. **Install dependencies:**
+   ```bash
+   npm install
+   ```
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+2. **Set up the database:**
+   - Create a PostgreSQL database
+   - Update `DATABASE_URL` in `.env.local`
+
+3. **Configure environment variables:**
+   - Copy `.env.local` and fill in your values
+   - Set up email provider (Gmail, etc.)
+   - Configure Google OAuth if needed
+
+4. **Run database migrations:**
+   ```bash
+   # Generate migration
+   npx drizzle-kit generate
+
+   # Run migration
+   npx drizzle-kit migrate
+   ```
+
+5. **Start the development server:**
+   ```bash
+   npm run dev
+   ```
+
+6. **Open [http://localhost:3000](http://localhost:3000) in your browser**
+
+## Project Structure
+
+```
+src/
+├── app/
+│   ├── api/auth/[...all]/route.ts    # Better Auth API routes
+│   ├── auth/                         # Authentication pages
+│   │   ├── sign-in/
+│   │   ├── sign-up/
+│   │   ├── forgot-password/
+│   │   ├── reset-password/
+│   │   ├── check-email/
+│   │   └── verify-email/
+│   ├── layout.tsx                    # Root layout
+│   ├── page.tsx                      # Home page
+│   └── globals.css                   # Global styles
+├── config/
+│   ├── mail.ts                       # Email configuration
+│   ├── routes.ts                     # Route definitions
+│   └── site.config.ts                # Site configuration
+├── core/                             # Core UI components
+├── hooks/                            # Custom hooks
+├── lib/
+│   ├── auth.ts                       # Better Auth configuration
+│   ├── auth-client.ts                # Auth client
+│   ├── db.ts                         # Database connection
+│   └── schema.ts                     # Database schema
+├── utils/
+│   └── auth-storage.ts               # Auth token storage
+└── validators/                       # Form validation schemas
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Authentication Flow
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+1. **Sign Up**: User creates account → Email verification sent
+2. **Email Verification**: User clicks verification link → Account activated
+3. **Sign In**: User can sign in with email/password or magic link
+4. **Magic Link**: User enters email → Magic link sent → Click link to sign in
+5. **Password Reset**: User requests reset → Reset email sent → Set new password
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Technologies Used
 
-## Learn More
+- **Next.js 15**: React framework
+- **Better Auth**: Authentication library
+- **Drizzle ORM**: Database ORM
+- **PostgreSQL**: Database
+- **Tailwind CSS**: Styling
+- **React Hook Form**: Form handling
+- **Zod**: Validation
+- **RizzUI**: UI components
+- **Nodemailer**: Email sending
 
-To learn more about Next.js, take a look at the following resources:
+## Environment Variables
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+```env
+# Database
+DATABASE_URL="postgresql://user:password@localhost:5432/auth_next"
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+# Better Auth
+BETTER_AUTH_SECRET="your-super-secret-key-here-minimum-32-characters"
+BETTER_AUTH_URL="http://localhost:3000"
 
-## Deploy on Vercel
+# Google OAuth
+GOOGLE_CLIENT_ID=""
+GOOGLE_CLIENT_SECRET=""
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+# Email
+MAIL_HOST="smtp.gmail.com"
+MAIL_PORT=587
+MAIL_SECURE=false
+MAIL_REQUIRE_TLS=true
+MAIL_USER="your-email@gmail.com"
+MAIL_PASS="your-app-password"
+MAIL_FROM="noreply@yourdomain.com"
+```
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## License
+
+MIT
