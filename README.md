@@ -119,6 +119,17 @@ MAIL_USER="your-email@gmail.com"
 MAIL_PASS="your-app-password"
 MAIL_FROM="noreply@yourdomain.com"
 ```
+## Sonar
+``` 
+ sonar \
+  -Dsonar.host.url=http://localhost:9000 \ 
+  -Dsonar.token=sqp_5535d3ce4c90132f4d922c3bd90e8e921fd402aa \
+  -Dsonar.projectKey=authenticationsonar \
+  -Dsonar.host.url=http://localhost:9000 \
+  -Dsonar.token=sqp_6f7458eb56944d3ed899e7e21a1abd6e606dd05f \
+  -Dsonar.projectKey=authentication
+  ```
+
 
 ## License
 

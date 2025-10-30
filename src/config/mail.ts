@@ -1,6 +1,6 @@
 export const MAIL = {
   host: process.env.SMTP_HOST || "email-smtp.eu-west-3.amazonaws.com",
-  port: parseInt(process.env.SMTP_PORT || "587"),
+  port: Number.parseInt(process.env.SMTP_PORT || "587"),
   secure: false, // false for STARTTLS, true for direct SSL
   requireTLS: true, // AWS SES requires TLS
   auth: {
