@@ -1,10 +1,10 @@
 import { betterAuth } from "better-auth";
-import { drizzleAdapter } from "better-auth/adapters/drizzle";
-import { db } from "./db";
-import schema from "./schema";
+import { mongodbAdapter } from "better-auth/adapters/mongodb";
+import {MongoClient} from "mongodb";  
 import { MAIL } from "@/config/mail";
 import { organization, magicLink } from "better-auth/plugins";
-
+const client = new MongoClient(process.env.MONGODB_URI || "mongodb://localhost:27017");
+const db = client.db();
 export const auth = betterAuth({
   plugins: [
     organization({
@@ -23,7 +23,6 @@ export const auth = betterAuth({
           host: MAIL.host,
           port: MAIL.port,
           secure: MAIL.secure,
-          requireTLS: MAIL.requireTLS,
           auth: MAIL.auth,
         });
 
@@ -120,15 +119,13 @@ export const auth = betterAuth({
       },
     }),
   ],
-  database: drizzleAdapter(db, {
-    provider: "pg",
-    schema: {
-      ...schema,
-    },
+  database: mongodbAdapter(db, {
+   client
+    
   }),
   emailAndPassword: {
     enabled: true,
-    requireEmailVerification: true, // Enable email verification
+    requireEmailVerification: true, // Temporarily disable email verification for testing
     sendResetPassword: async (
       { user, url, token }: { user: any; url: string; token: string },
       request: any
@@ -140,7 +137,6 @@ export const auth = betterAuth({
         host: MAIL.host,
         port: MAIL.port,
         secure: MAIL.secure,
-        requireTLS: MAIL.requireTLS,
         auth: MAIL.auth,
       });
 
@@ -248,7 +244,6 @@ export const auth = betterAuth({
         host: MAIL.host,
         port: MAIL.port,
         secure: MAIL.secure,
-        requireTLS: MAIL.requireTLS,
         auth: MAIL.auth,
       });
 
@@ -362,7 +357,6 @@ Need help? Contact us at support@tokenizedeconomies.org
     host: MAIL.host,
     port: MAIL.port,
     secure: MAIL.secure,
-    requireTLS: MAIL.requireTLS,
     auth: {
       user: MAIL.auth.user,
       pass: MAIL.auth.pass,
@@ -378,7 +372,7 @@ Need help? Contact us at support@tokenizedeconomies.org
   secret:
     process.env.BETTER_AUTH_SECRET ||
     "your-super-secret-key-here-minimum-32-characters-for-testing",
-  baseURL: process.env.BETTER_AUTH_URL || "http://localhost:3001",
+  baseURL: process.env.BETTER_AUTH_URL || "http://localhost:3000",
 });
 
 console.log("Better-auth initialized successfully");

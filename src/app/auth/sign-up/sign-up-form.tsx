@@ -65,7 +65,7 @@ export default function SignUpForm() {
         );
       }
     } catch (error) {
-      console.error("Sign-up error:", JSON.stringify(error, null, 2));
+      console.error("Sign-up error:", error);
       toast.error("Failed to create account. Please try again.");
     } finally {
       setIsLoading(false);

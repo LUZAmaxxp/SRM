@@ -129,8 +129,6 @@ function AuthHeader() {
   );
 }
 
-const footerMenu: { name: string; href: string }[] = [];
-
 function AuthFooter() {
   const { t: t } = useTranslations();
 
@@ -145,17 +143,6 @@ function AuthFooter() {
           Safedetect
         </Link>
         , {t("auth.auth-all-rights-reserved")}
-      </div>
-      <div className="-mx-2.5 flex items-center justify-end pb-3 font-medium text-gray-700 lg:w-1/2 lg:pb-0">
-        {footerMenu.map((item) => (
-          <Link
-            key={item.name}
-            href={item.href}
-            className="px-2.5 py-1.5 transition-colors hover:text-primary"
-          >
-            {t(item.name)}
-          </Link>
-        ))}
       </div>
     </footer>
   );

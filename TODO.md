@@ -1,0 +1,3 @@
+- [x] Remove drizzle-orm, pg, and drizzle-kit from package.json
+- [x] Update README.md to remove Drizzle references
+- [x] Run npm install to update dependencies

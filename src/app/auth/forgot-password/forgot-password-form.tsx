@@ -20,7 +20,7 @@ const initialValues = {
 };
 
 export default function ForgetPasswordForm() {
-  const { t: t } = useTranslations();
+  const { t} = useTranslations();
   const { t: tAuth } = useTranslations();
   const isMedium = useMedia("(max-width: 1200px)", false);
   const [reset, setReset] = useState({});
@@ -30,7 +30,7 @@ export default function ForgetPasswordForm() {
     setIsLoading(true);
 
     try {
-      const { data: result, error } = await authClient.forgetPassword({
+      const { error } = await authClient.forgetPassword({
         email: data.email,
       });
 

@@ -2,5 +2,5 @@ projectKey=authentication
 serverUrl=http://localhost:9000
 serverVersion=25.10.0.114319
 dashboardUrl=http://localhost:9000/dashboard?id=authentication
-ceTaskId=a36e47e4-6c0e-4fdd-b4d5-5d36a3be1a2a
-ceTaskUrl=http://localhost:9000/api/ce/task?id=a36e47e4-6c0e-4fdd-b4d5-5d36a3be1a2a
+ceTaskId=ecd4c0c4-8bb2-4a1e-ab30-20f9d61d7135
+ceTaskUrl=http://localhost:9000/api/ce/task?id=ecd4c0c4-8bb2-4a1e-ab30-20f9d61d7135

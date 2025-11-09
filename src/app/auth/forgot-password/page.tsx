@@ -5,7 +5,7 @@ import ForgetPasswordForm from './forgot-password-form';
 import { useTranslations } from '@/hooks/use-translations';
 
 export default function ForgotPasswordPage() {
-  const { t: t } = useTranslations();
+  const { t } = useTranslations();
   
   return (
     <AuthWrapperFour
