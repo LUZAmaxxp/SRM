@@ -4,7 +4,7 @@ import { useEffect, useState, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Plus, FileText, AlertTriangle, Calendar, Users, MapPin, Table } from 'lucide-react';
+import { Plus, FileText, AlertTriangle, Calendar, Users, MapPin } from 'lucide-react';
 import toast, { Toaster } from 'react-hot-toast';
 import RecordsTable from '@/components/records-table';
 import SidebarMenu from '@/components/sidebar-menu';
