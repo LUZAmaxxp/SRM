@@ -11,35 +11,41 @@ if (!MONGODB_URI) {
  * in development. This prevents connections growing exponentially
  * during API Route usage.
  */
-let cached = (global as { mongoose?: { conn: typeof mongoose | null; promise: Promise<typeof mongoose> | null } }).mongoose;
+let cached: { conn: typeof mongoose | null; promise: Promise<typeof mongoose> | null } | undefined = (global as { mongoose?: { conn: typeof mongoose | null; promise: Promise<typeof mongoose> | null } }).mongoose;
 
 if (!cached) {
-  cached = (global as { mongoose: { conn: typeof mongoose | null; promise: Promise<typeof mongoose> | null } }).mongoose = { conn: null, promise: null };
+  cached = (global as unknown as { mongoose: { conn: typeof mongoose | null; promise: Promise<typeof mongoose> | null } }).mongoose = { conn: null, promise: null };
 }
 
 async function dbConnect() {
-  if (cached.conn) {
+  if (cached && cached.conn) {
     return cached.conn;
   }
 
-  if (!cached.promise) {
+  if (!cached || !cached.promise) {
     const opts = {
       bufferCommands: false,
     };
 
-    cached.promise = mongoose.connect(MONGODB_URI, opts).then((mongoose) => {
-      return mongoose;
-    });
+    if (cached) {
+      cached.promise = mongoose.connect(MONGODB_URI, opts).then((mongoose) => {
+        return mongoose;
+      });
+    }
   }
 
   try {
-    cached.conn = await cached.promise;
+    if (cached && cached.promise) {
+      cached.conn = await cached.promise;
+    }
   } catch (e) {
-    cached.promise = null;
+    if (cached) {
+      cached.promise = null;
+    }
     throw e;
   }
 
-  return cached.conn;
+  return cached?.conn || null;
 }
 
 export default dbConnect;

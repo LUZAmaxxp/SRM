@@ -23,7 +23,7 @@ const initialValues = {
 
 export default function SignUpForm() {
   const isMedium = useMedia("(max-width: 1200px)", false);
-  const [reset, setReset] = useState({});
+  const [reset, setReset] = useState<SignUpSchema>(initialValues);
   const [isLoading, setIsLoading] = useState(false);
   const [showUserExistsDialog, setShowUserExistsDialog] = useState(false);
   const router = useRouter();

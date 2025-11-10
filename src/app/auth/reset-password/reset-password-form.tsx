@@ -2,7 +2,7 @@
 
 import { Link } from "@/hooks/use-navigation";
 import toast from "react-hot-toast";
-import { useState, useEffect } from "react";
+import { useState, useEffect, Suspense } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import { SubmitHandler } from "react-hook-form";
 import { Button, Input, Password } from "rizzui";
@@ -14,8 +14,10 @@ import {
   ResetPasswordSchema,
 } from "@/validators/reset-password.schema";
 import { authClient } from "@/lib/auth-client";
+import { useTranslations } from "@/hooks/use-translations";
 
-export default function ResetPasswordForm() {
+function ResetPasswordFormContent() {
+  const { t } = useTranslations();
   const isMedium = useMedia("(max-width: 1200px)", false);
   const [isLoading, setIsLoading] = useState(false);
   const [email, setEmail] = useState("");
@@ -82,7 +84,7 @@ export default function ResetPasswordForm() {
   return (
     <>
       <Form<ResetPasswordSchema>
-        validationSchema={resetPasswordSchema()}
+        validationSchema={resetPasswordSchema(t)}
         onSubmit={onSubmit}
         useFormProps={{
           defaultValues: { ...initialValues, email },
@@ -138,5 +140,13 @@ export default function ResetPasswordForm() {
         </Link>
       </p>
     </>
+  );
+}
+
+export default function ResetPasswordForm() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <ResetPasswordFormContent />
+    </Suspense>
   );
 }

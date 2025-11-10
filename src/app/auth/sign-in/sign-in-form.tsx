@@ -22,7 +22,7 @@ export default function SignInForm() {
   const { t } = useTranslations();
   const isMedium = useMedia("(max-width: 1200px)", false);
   const [isLoading, setIsLoading] = useState(false);
-  const [reset, setReset] = useState({});
+  const [reset, setReset] = useState<LoginSchema>(initialValues);
 
   // Force reset form to ensure rememberMe is unchecked by default
   useEffect(() => {

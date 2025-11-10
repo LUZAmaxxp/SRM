@@ -1,12 +1,12 @@
 "use client";
-import { useEffect, useState } from "react";
+import { useEffect, useState, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Button } from "rizzui";
 import AuthWrapperFour from '@/app/shared/auth-layout/auth-wrapper-four';
 import { routes } from "@/config/routes";
 import { messages } from "@/config/messages";
 
-export default function VerifyEmailPage() {
+function VerifyEmailContent() {
   const [status, setStatus] = useState<"verifying" | "success" | "error">(
     "verifying"
   );
@@ -170,5 +170,13 @@ export default function VerifyEmailPage() {
         </div>
       </div>
     </AuthWrapperFour>
+  );
+}
+
+export default function VerifyEmailPage() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <VerifyEmailContent />
+    </Suspense>
   );
 }

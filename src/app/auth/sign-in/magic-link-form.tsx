@@ -23,7 +23,7 @@ const initialValues: MagicLinkSchema = {
 export default function MagicLinkForm() {
   const isMedium = useMedia("(max-width: 1200px)", false);
   const [isLoading, setIsLoading] = useState(false);
-  const [reset, setReset] = useState({});
+  const [reset, setReset] = useState<MagicLinkSchema>(initialValues);
   const [emailSent, setEmailSent] = useState(false);
 
   const onSubmit: SubmitHandler<MagicLinkSchema> = async (data) => {
@@ -86,7 +86,7 @@ export default function MagicLinkForm() {
           variant="outline"
           onClick={() => {
             setEmailSent(false);
-            setReset({});
+            setReset(initialValues);
           }}
           className="w-full"
         >

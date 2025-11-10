@@ -235,7 +235,7 @@ export default function NewReclamationPage() {
                   </div>
                   <FileUpload
                     onFileSelect={() => {}}
-                    onUrlChange={(url) => setValue('photoUrl', url)}
+                    onUrlChange={(url) => setValue('photoUrl', url || undefined)}
                     currentUrl={photoUrl}
                     label="Photo (Optional)"
                     error={errors.photoUrl?.message}

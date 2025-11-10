@@ -133,6 +133,7 @@ function createPhotoSection(photoBuffer: Buffer | null): Paragraph[] {
             width: 400,
             height: 300,
           },
+          type: "png", // Specify image type
         }),
       ],
       spacing: { after: 400 },
@@ -162,7 +163,7 @@ async function generateReportDoc(
         properties: {},
         children: [
           // Header
-          createMainHeader("UTILITY FIRM"),
+          createMainHeader(),
           createReportTitle(reportTitle),
 
           // Report Details Table

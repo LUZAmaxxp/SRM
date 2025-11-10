@@ -23,7 +23,7 @@ export default function ForgetPasswordForm() {
   const { t} = useTranslations();
   const { t: tAuth } = useTranslations();
   const isMedium = useMedia("(max-width: 1200px)", false);
-  const [reset, setReset] = useState({});
+  const [reset, setReset] = useState<ForgetPasswordSchema>(initialValues);
   const [isLoading, setIsLoading] = useState(false);
 
   const onSubmit: SubmitHandler<ForgetPasswordSchema> = async (data) => {
@@ -54,7 +54,7 @@ export default function ForgetPasswordForm() {
   return (
     <>
       <Form<ForgetPasswordSchema>
-        validationSchema={forgetPasswordSchema(t)}
+        validationSchema={forgetPasswordSchema()}
         resetValues={reset}
         onSubmit={onSubmit}
         useFormProps={{

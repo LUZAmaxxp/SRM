@@ -31,6 +31,7 @@ interface Record {
 
 interface RecordsTableProps {
   records: Record[];
+  onExport?: () => void;
 }
 
 export default function RecordsTable({ records, }: RecordsTableProps) {

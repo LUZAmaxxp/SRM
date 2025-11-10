@@ -6,9 +6,9 @@ import { validateEmail, validatePassword, validateConfirmPassword } from "./comm
 export const resetPasswordSchema = (t: (arg: string) => string) =>
   z
     .object({
-      email: validateEmail(t),
-      password: validatePassword(t),
-      confirmPassword: validateConfirmPassword(t),
+      email: validateEmail(),
+      password: validatePassword(),
+      confirmPassword: validateConfirmPassword(),
     })
     .refine((data) => data.password === data.confirmPassword, {
       message: t(messages.passwordsDidNotMatch),
