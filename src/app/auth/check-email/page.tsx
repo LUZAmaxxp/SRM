@@ -2,13 +2,11 @@
 
 import { useEffect, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { useTranslations } from '@/hooks/use-translations';
 import { Button } from "rizzui";
 import AuthWrapperFour from "@/app/shared/auth-layout/auth-wrapper-four";
 import { routes } from "@/config/routes";
 
 export default function CheckEmailPage() {
-  const { t: t } = useTranslations();
   const router = useRouter();
   const searchParams = useSearchParams();
   const [email, setEmail] = useState<string>("");

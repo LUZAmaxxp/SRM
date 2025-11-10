@@ -1,6 +1,6 @@
 # Auth Next
 
-A complete authentication system built with Next.js, Better Auth, and Drizzle ORM.
+A complete authentication system built with Next.js, Better Auth, and MongoDB.
 
 ## Features
 
@@ -10,7 +10,7 @@ A complete authentication system built with Next.js, Better Auth, and Drizzle OR
 - **Password Reset**: Secure password reset functionality
 - **Social Login**: Google OAuth integration
 - **Organization Support**: Multi-tenant organization management
-- **Database**: PostgreSQL with Drizzle ORM
+- **Database**: MongoDB
 
 ## Getting Started
 
@@ -20,22 +20,16 @@ A complete authentication system built with Next.js, Better Auth, and Drizzle OR
    ```
 
 2. **Set up the database:**
-   - Create a PostgreSQL database
-   - Update `DATABASE_URL` in `.env.local`
+   - Set up MongoDB (local or cloud)
+   - Update `MONGODB_URI` in `.env.local`
 
 3. **Configure environment variables:**
    - Copy `.env.local` and fill in your values
    - Set up email provider (Gmail, etc.)
    - Configure Google OAuth if needed
 
-4. **Run database migrations:**
-   ```bash
-   # Generate migration
-   npx drizzle-kit generate
-
-   # Run migration
-   npx drizzle-kit migrate
-   ```
+4. **Database setup:**
+   - MongoDB is schema-less, no migrations needed
 
 5. **Start the development server:**
    ```bash
@@ -88,8 +82,7 @@ src/
 
 - **Next.js 15**: React framework
 - **Better Auth**: Authentication library
-- **Drizzle ORM**: Database ORM
-- **PostgreSQL**: Database
+- **MongoDB**: Database
 - **Tailwind CSS**: Styling
 - **React Hook Form**: Form handling
 - **Zod**: Validation
@@ -100,7 +93,7 @@ src/
 
 ```env
 # Database
-DATABASE_URL="postgresql://user:password@localhost:5432/auth_next"
+MONGODB_URI="mongodb://localhost:27017/auth_next"
 
 # Better Auth
 BETTER_AUTH_SECRET="your-super-secret-key-here-minimum-32-characters"
@@ -119,6 +112,13 @@ MAIL_USER="your-email@gmail.com"
 MAIL_PASS="your-app-password"
 MAIL_FROM="noreply@yourdomain.com"
 ```
+## Sonar
+``` 
+  sonar \  -Dsonar.host.url=http://localhost:9000 \ 
+  -Dsonartoken=sqp_06aa43b009f1913b6d14553b78400f9fd9c5ee \
+   -Dsonar.projectKey=authentication
+  ```
+
 
 ## License
 

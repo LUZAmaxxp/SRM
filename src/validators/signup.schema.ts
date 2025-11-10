@@ -3,13 +3,13 @@ import { messages } from "@/config/messages";
 import { validateEmail, validatePassword, validateConfirmPassword } from "./common-rules";
 
 // form zod validation schema
-export const signUpSchema = (t: (arg: string) => string) =>
+export const signUpSchema = () =>
   z.object({
     firstName: z.string().min(1, { message: messages.firstNameRequired }),
     lastName: z.string().optional(),
-    email: validateEmail(t),
-    password: validatePassword(t),
-    confirmPassword: validateConfirmPassword(t),
+    email: validateEmail(),
+    password: validatePassword(),
+    confirmPassword: validateConfirmPassword(),
     isAgreed: z.boolean(),
   });
 

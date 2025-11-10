@@ -3,14 +3,11 @@
 import { Link } from "@/hooks/use-navigation";
 import { routes } from "@/config/routes";
 import cn from "@core/utils/class-names";
-import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { Title, Button } from "rizzui";
 import { PiArrowLineRight, PiUserCirclePlus } from "react-icons/pi";
 import { FcGoogle } from "react-icons/fc";
 import OrSeparation from "./or-separation";
-import { siteConfig } from "@/config/site.config";
-import { BsFacebook } from "react-icons/bs";
 import { useTranslations } from "@/hooks/use-translations";
 import { authClient } from "@/lib/auth-client";
 
@@ -54,7 +51,7 @@ export default function AuthWrapperFour({
   isSignIn?: boolean;
   className?: string;
 }) {
-  const { t: t } = useTranslations();
+  const { t } = useTranslations();
 
   const handleGoogleSignIn = async () => {
     await authClient.signIn.social({
@@ -112,7 +109,7 @@ export default function AuthWrapperFour({
 }
 
 function AuthHeader() {
-  const { t: t } = useTranslations();
+  const { t } = useTranslations();
   return (
     <header className="flex items-center justify-end p-4 lg:px-16 lg:py-6 2xl:px-24">
       <div className="flex items-center space-x-2 md:space-x-4">
@@ -129,10 +126,8 @@ function AuthHeader() {
   );
 }
 
-const footerMenu: { name: string; href: string }[] = [];
-
 function AuthFooter() {
-  const { t: t } = useTranslations();
+  const { t } = useTranslations();
 
   return (
     <footer className="flex flex-col-reverse items-center justify-between px-4 py-5 lg:flex-row lg:px-16 lg:py-6 2xl:px-24 2xl:py-10">
@@ -142,20 +137,9 @@ function AuthFooter() {
           href="https://safedetect.com/"
           className="font-medium transition-colors hover:text-primary"
         >
-          Safedetect
+         Sociéte Régionale Multiservices SOUSS MASSA
         </Link>
         , {t("auth.auth-all-rights-reserved")}
-      </div>
-      <div className="-mx-2.5 flex items-center justify-end pb-3 font-medium text-gray-700 lg:w-1/2 lg:pb-0">
-        {footerMenu.map((item) => (
-          <Link
-            key={item.name}
-            href={item.href}
-            className="px-2.5 py-1.5 transition-colors hover:text-primary"
-          >
-            {t(item.name)}
-          </Link>
-        ))}
       </div>
     </footer>
   );

@@ -1,13 +1,12 @@
 export const MAIL = {
-  host: process.env.SMTP_HOST || "email-smtp.eu-west-3.amazonaws.com",
-  port: parseInt(process.env.SMTP_PORT || "587"),
-  secure: false, // false for STARTTLS, true for direct SSL
-  requireTLS: true, // AWS SES requires TLS
+  host: process.env.SMTP_HOST || "smtp.gmail.com",
+  port: Number.parseInt(process.env.SMTP_PORT || "587"),
+  secure: false, 
   auth: {
-    user: process.env.SMTP_USER || "user",
-    pass: process.env.SMTP_PASS || "password",
+    user: process.env.SMTP_USER || "allouchayman70@gmail.com",
+    pass: process.env.SMTP_PASS || "kskaxgomcoxvzxqo",
   },
-  from: process.env.SMTP_SENDER || "no_reply@notify.fevertokens.io",
+  from: process.env.SMTP_SENDER || "noreply@srm-sm.com",
   logger: true,
   debug: true,
 };
@@ -17,7 +16,6 @@ console.log("MAIL configuration loaded:", {
   host: MAIL.host,
   port: MAIL.port,
   secure: MAIL.secure,
-  requireTLS: MAIL.requireTLS,
   from: MAIL.from,
   authUser: MAIL.auth.user ? "SET" : "NOT SET",
   authPass: MAIL.auth.pass ? "SET" : "NOT SET",

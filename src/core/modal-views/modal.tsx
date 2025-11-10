@@ -4,12 +4,11 @@ import { ReactNode } from "react";
 
 interface ModalProps {
   isOpen: boolean;
-  onClose: () => void;
   size?: string;
   children: ReactNode;
 }
 
-export function Modal({ isOpen, onClose, size = "md", children }: ModalProps) {
+export function Modal({ isOpen, size = "md", children }: ModalProps) {
   if (!isOpen) return null;
 
   return (

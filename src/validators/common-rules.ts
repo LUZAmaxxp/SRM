@@ -9,47 +9,47 @@ export const fileSchema = z.object({
 
 export type FileSchema = z.infer<typeof fileSchema>;
 
-export const validateEmail = (t: (arg: string) => string) =>
+export const validateEmail = () =>
   z
     .string()
-    .min(1, { message: t(messages.emailIsRequired) })
-    .email({ message: t(messages.invalidEmail) });
+    .min(1, { message: messages.emailIsRequired })
+    .email({ message: messages.invalidEmail });
 
-export const validatePassword = (t: (arg: string) => string) =>
+export const validatePassword = () =>
   z
     .string()
-    .min(1, { message: t(messages.passwordRequired) })
-    .min(6, { message: t(messages.passwordLengthMin) })
+    .min(1, { message: messages.passwordRequired })
+    .min(6, { message: messages.passwordLengthMin })
     .regex(new RegExp(".*[A-Z].*"), {
-      message: t(messages.passwordOneUppercase),
+      message: messages.passwordOneUppercase,
     })
     .regex(new RegExp(".*[a-z].*"), {
-      message: t(messages.passwordOneLowercase),
+      message: messages.passwordOneLowercase,
     })
-    .regex(new RegExp(".*\\d.*"), { message: t(messages.passwordOneNumeric) });
+    .regex(new RegExp(".*\\d.*"), { message: messages.passwordOneNumeric });
 
-export const validateNewPassword = (t: (arg: string) => string) =>
+export const validateNewPassword = () =>
   z
     .string()
-    .min(1, { message: t(messages.passwordRequired) })
-    .min(6, { message: t(messages.passwordLengthMin) })
+    .min(1, { message: messages.passwordRequired })
+    .min(6, { message: messages.passwordLengthMin })
     .regex(new RegExp(".*[A-Z].*"), {
-      message: t(messages.passwordOneUppercase),
+      message: messages.passwordOneUppercase,
     })
     .regex(new RegExp(".*[a-z].*"), {
-      message: t(messages.passwordOneLowercase),
+      message: messages.passwordOneLowercase,
     })
-    .regex(new RegExp(".*\\d.*"), { message: t(messages.passwordOneNumeric) });
+    .regex(new RegExp(".*\\d.*"), { message: messages.passwordOneNumeric });
 
-export const validateConfirmPassword = (t: (arg: string) => string) =>
+export const validateConfirmPassword = () =>
   z
     .string()
-    .min(1, { message: t(messages.confirmPasswordRequired) })
-    .min(6, { message: t(messages.passwordLengthMin) })
+    .min(1, { message: messages.confirmPasswordRequired })
+    .min(6, { message: messages.passwordLengthMin })
     .regex(new RegExp(".*[A-Z].*"), {
-      message: t(messages.passwordOneUppercase),
+      message: messages.passwordOneUppercase,
     })
     .regex(new RegExp(".*[a-z].*"), {
-      message: t(messages.passwordOneLowercase),
+      message: messages.passwordOneLowercase,
     })
-    .regex(new RegExp(".*\\d.*"), { message: t(messages.passwordOneNumeric) });
+    .regex(new RegExp(".*\\d.*"), { message: messages.passwordOneNumeric });

@@ -13,12 +13,9 @@ import {
   resetPasswordSchema,
   ResetPasswordSchema,
 } from "@/validators/reset-password.schema";
-import { useTranslations } from "@/hooks/use-translations";
 import { authClient } from "@/lib/auth-client";
 
 export default function ResetPasswordForm() {
-  const { t: t } = useTranslations();
-  const { t: tAuth } = useTranslations();
   const isMedium = useMedia("(max-width: 1200px)", false);
   const [isLoading, setIsLoading] = useState(false);
   const [email, setEmail] = useState("");
@@ -50,7 +47,7 @@ export default function ResetPasswordForm() {
     setIsLoading(true);
 
     try {
-      const { data: result, error } = await authClient.resetPassword({
+      const { error } = await authClient.resetPassword({
         newPassword: data.password,
         token: token,
       });
@@ -67,7 +64,7 @@ export default function ResetPasswordForm() {
         router.push("/");
       }
     } catch (error) {
-      console.error("Reset password error:", JSON.stringify(error, null, 2));
+      console.error("Reset password error:", error);
       toast.error("Failed to reset password. Please try again.");
     } finally {
       setIsLoading(false);
@@ -85,7 +82,7 @@ export default function ResetPasswordForm() {
   return (
     <>
       <Form<ResetPasswordSchema>
-        validationSchema={resetPasswordSchema(t)}
+        validationSchema={resetPasswordSchema()}
         onSubmit={onSubmit}
         useFormProps={{
           defaultValues: { ...initialValues, email },
@@ -105,16 +102,16 @@ export default function ResetPasswordForm() {
               value={email}
             />
             <Password
-              label={t("form.form-new-password")}
-              placeholder="Enter your new password"
+              label={t("form.form-new-password-label")}
+              placeholder={t("form.form-new-password")}
               size={isMedium ? "lg" : "xl"}
               className="[&>label>span]:font-medium"
               {...register("password")}
               error={errors.password?.message}
             />
             <Password
-              label={t("form.form-confirm-password")}
-              placeholder="Confirm your new password"
+              label={t("form.form-confirm-password-label")}
+              placeholder={t("form.form-confirm-password")}
               size={isMedium ? "lg" : "xl"}
               className="[&>label>span]:font-medium"
               {...register("confirmPassword")}
@@ -126,18 +123,18 @@ export default function ResetPasswordForm() {
               size={isMedium ? "lg" : "xl"}
               isLoading={isLoading}
             >
-              {tAuth("auth.auth-reset-password")}
+              {t("auth.auth-reset-password-label")}
             </Button>
           </div>
         )}
       </Form>
       <p className="mt-6 text-center text-[15px] leading-loose text-gray-500 md:mt-7 lg:mt-9 lg:text-base">
-        Remember your password?{" "}
+        {t("auth.auth-remember-password")}{" "}
         <Link
           href={routes.auth.signIn}
           className="font-semibold text-gray-700 transition-colors hover:text-primary"
         >
-          {tAuth("auth.auth-sign-in")}
+          {t("auth.auth-sign-in")}
         </Link>
       </p>
     </>

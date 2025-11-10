@@ -8,7 +8,6 @@ import { useMedia } from "@core/hooks/use-media";
 import { Form } from "@core/ui/form";
 import { routes } from "@/config/routes";
 import { signUpSchema, SignUpSchema } from "@/validators/signup.schema";
-import { useTranslations } from "@/hooks/use-translations";
 import { Modal } from "@core/modal-views/modal";
 import { authClient } from "@/lib/auth-client";
 import toast from "react-hot-toast";
@@ -23,8 +22,6 @@ const initialValues = {
 };
 
 export default function SignUpForm() {
-  const { t: t } = useTranslations();
-  const { t: tAuth } = useTranslations();
   const isMedium = useMedia("(max-width: 1200px)", false);
   const [reset, setReset] = useState({});
   const [isLoading, setIsLoading] = useState(false);
@@ -65,7 +62,7 @@ export default function SignUpForm() {
         );
       }
     } catch (error) {
-      console.error("Sign-up error:", JSON.stringify(error, null, 2));
+      console.error("Sign-up error:", error);
       toast.error("Failed to create account. Please try again.");
     } finally {
       setIsLoading(false);
@@ -76,7 +73,7 @@ export default function SignUpForm() {
   return (
     <>
       <Form<SignUpSchema>
-        validationSchema={signUpSchema(t)}
+        validationSchema={signUpSchema()}
         resetValues={reset}
         onSubmit={onSubmit}
         useFormProps={{
@@ -89,7 +86,7 @@ export default function SignUpForm() {
               <Input
                 type="text"
                 size={isMedium ? "lg" : "xl"}
-                label={t("form.form-first-name")}
+                label="First Name"
                 placeholder="Enter your first name"
                 className="[&>label>span]:font-medium [&>label>span]:text-black"
                 {...register("firstName")}
@@ -98,7 +95,7 @@ export default function SignUpForm() {
               <Input
                 type="text"
                 size={isMedium ? "lg" : "xl"}
-                label={t("form.form-last-name")}
+                label="Last Name"
                 placeholder="Enter your last name"
                 className="[&>label>span]:font-medium [&>label>span]:text-black"
                 {...register("lastName")}
@@ -108,14 +105,14 @@ export default function SignUpForm() {
             <Input
               type="email"
               size={isMedium ? "lg" : "xl"}
-              label={t("form.form-email")}
+              label="Email"
               placeholder="Enter your email address"
               className="[&>label>span]:font-medium [&>label>span]:text-black"
               {...register("email")}
               error={errors.email?.message}
             />
             <Password
-              label={t("form.form-password")}
+              label="Password"
               placeholder="Create a strong password"
               size={isMedium ? "lg" : "xl"}
               {...register("password")}
@@ -123,7 +120,7 @@ export default function SignUpForm() {
               error={errors.password?.message}
             />
             <Password
-              label={t("form.form-confirm-password")}
+              label="Confirm Password"
               placeholder="Confirm your password"
               size={isMedium ? "lg" : "xl"}
               {...register("confirmPassword")}
@@ -136,19 +133,19 @@ export default function SignUpForm() {
                 className="[&>label.items-center]:items-start [&>label>div.leading-none]:mt-0.5 [&>label>div.leading-none]:sm:mt-0 [&>label>span]:font-medium [&>label>span]:text-black"
                 label={
                   <span className="ps-1 text-gray-500">
-                    {tAuth("auth.auth-agreement-text")}{" "}
+                    I agree to the{" "}
                     <Link
                       href="/"
                       className="font-semibold text-gray-700 transition-colors hover:text-primary"
                     >
-                      {tAuth("auth.auth-terms")}
+                      Terms
                     </Link>{" "}
                     &{" "}
                     <Link
                       href="/"
                       className="font-semibold text-gray-700 transition-colors hover:text-primary"
                     >
-                      {tAuth("auth.auth-privacy-policy")}
+                      Privacy Policy
                     </Link>
                   </span>
                 }
@@ -160,18 +157,18 @@ export default function SignUpForm() {
               size={isMedium ? "lg" : "xl"}
               isLoading={isLoading}
             >
-              {tAuth("auth.auth-create-account")}
+              Create Account
             </Button>
           </div>
         )}
       </Form>
       <p className="mt-6 text-center text-[15px] leading-loose text-gray-500 md:mt-7 lg:mt-9 lg:text-base">
-        {tAuth("auth.auth-already-have-account")}{" "}
+        Already have an account?{" "}
         <Link
           href={routes.auth.signIn}
           className="font-semibold text-gray-700 transition-colors hover:text-primary"
         >
-          {tAuth("auth.auth-sign-in")}
+          Sign In
         </Link>
       </p>
 

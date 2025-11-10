@@ -1,9 +1,10 @@
 import { z } from 'zod';
+import { messages } from '@/config/messages';
 
 // form zod validation schema
 export const loginSchema = z.object({
-  email: z.string().email(),
-  password: z.string().min(1),
+  email: z.string().min(1, { message: messages.emailIsRequired }).email({ message: messages.invalidEmail }),
+  password: z.string().min(1, { message: messages.passwordRequired }),
   rememberMe: z.boolean(),
 });
 
