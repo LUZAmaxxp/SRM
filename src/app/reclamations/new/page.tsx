@@ -16,6 +16,7 @@ import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { FileUpload } from '@/components/ui/file-upload';
 import toast, { Toaster } from 'react-hot-toast';
 import { messages } from '@/config/messages';
+import SidebarMenu from '@/components/sidebar-menu';
 
 const steps = [
   { title: messages["reclamation.step-basic"], description: messages["reclamation.step-basic-desc"] },
@@ -116,8 +117,10 @@ export default function NewReclamationPage() {
   const progress = (currentStep / steps.length) * 100;
 
   return (
-    <div className="min-h-screen bg-gray-50 py-8">
-      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen bg-gray-50 flex">
+      <SidebarMenu />
+      <div className="flex-1 py-8">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="mb-8">
           <h1 className="text-3xl font-bold text-gray-900">{messages["reclamation.new-title"]}</h1>
           <p className="mt-2 text-gray-600">{messages["reclamation.new-subtitle"]}</p>
@@ -356,6 +359,7 @@ export default function NewReclamationPage() {
             </form>
           </CardContent>
         </Card>
+        </div>
       </div>
       <Toaster />
     </div>

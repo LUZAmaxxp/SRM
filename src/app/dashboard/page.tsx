@@ -7,7 +7,16 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Plus, FileText, AlertTriangle, Calendar, Users, MapPin, Table } from 'lucide-react';
 import toast, { Toaster } from 'react-hot-toast';
 import RecordsTable from '@/components/records-table';
+import SidebarMenu from '@/components/sidebar-menu';
 import { authClient } from '@/lib/auth-client';
+import {
+  Breadcrumb,
+  BreadcrumbItem,
+  BreadcrumbLink,
+  BreadcrumbList,
+  BreadcrumbPage,
+  BreadcrumbSeparator,
+} from '@/components/ui/breadcrumb';
 
 interface Record {
   _id: string;
@@ -33,7 +42,7 @@ export default function DashboardPage() {
   const [records, setRecords] = useState<Record[]>([]);
   const [loading, setLoading] = useState(true);
   const [authenticated, setAuthenticated] = useState(false);
-  const [viewMode, setViewMode] = useState<'cards' | 'table'>('cards');
+  const [activeSection, setActiveSection] = useState<'overview' | 'interventions' | 'reclamations' | 'records'>('overview');
   const router = useRouter();
 
   const handleExport = () => {
@@ -131,36 +140,107 @@ export default function DashboardPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {/* Header */}
-        <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900">Tableau de bord</h1>
-          <p className="mt-2 text-gray-600">Gérez vos interventions et réclamations</p>
-        </div>
+    <div className="min-h-screen bg-gray-50 flex">
+      <SidebarMenu activeSection={activeSection} onSectionChange={setActiveSection} />
 
-        {/* View Toggle */}
-        <div className="mb-6 flex gap-2">
-          <Button
-            variant={viewMode === 'cards' ? 'default' : 'outline'}
-            onClick={() => setViewMode('cards')}
-            className="flex items-center gap-2"
-          >
-            <FileText className="w-4 h-4" />
-            Vue cartes
-          </Button>
-          <Button
-            variant={viewMode === 'table' ? 'default' : 'outline'}
-            onClick={() => setViewMode('table')}
-            className="flex items-center gap-2"
-          >
-            <Table className="w-4 h-4" />
-            Vue tableau
-          </Button>
-        </div>
+      {/* Main Content */}
+      <div className="flex-1">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+          {/* Header */}
+          <div className="mb-8">
+            <h1 className="text-3xl font-bold text-gray-900">Tableau de bord</h1>
+            <p className="mt-2 text-gray-600">Gérez vos interventions et réclamations</p>
+          </div>
 
-        {viewMode === 'cards' ? (
+          {/* Breadcrumb Navigation */}
+          <div className="mb-6">
+            <Breadcrumb>
+              <BreadcrumbList>
+                <BreadcrumbItem>
+                  <BreadcrumbLink
+                    onClick={() => setActiveSection('overview')}
+                    className={activeSection === 'overview' ? 'font-semibold' : 'cursor-pointer'}
+                  >
+                    Aperçu
+                  </BreadcrumbLink>
+                </BreadcrumbItem>
+                <BreadcrumbSeparator />
+                <BreadcrumbItem>
+                  <BreadcrumbLink
+                    onClick={() => setActiveSection('interventions')}
+                    className={activeSection === 'interventions' ? 'font-semibold' : 'cursor-pointer'}
+                  >
+                    Interventions
+                  </BreadcrumbLink>
+                </BreadcrumbItem>
+                <BreadcrumbSeparator />
+                <BreadcrumbItem>
+                  <BreadcrumbLink
+                    onClick={() => setActiveSection('reclamations')}
+                    className={activeSection === 'reclamations' ? 'font-semibold' : 'cursor-pointer'}
+                  >
+                    Réclamations
+                  </BreadcrumbLink>
+                </BreadcrumbItem>
+                <BreadcrumbSeparator />
+                <BreadcrumbItem>
+                  <BreadcrumbPage
+                    onClick={() => setActiveSection('records')}
+                    className={activeSection === 'records' ? 'font-semibold cursor-pointer' : 'cursor-pointer'}
+                  >
+                    Tous les enregistrements
+                  </BreadcrumbPage>
+                </BreadcrumbItem>
+              </BreadcrumbList>
+            </Breadcrumb>
+          </div>
+
+        {activeSection === 'overview' && (
           <>
+            {/* Stats */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+              <Card>
+                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                  <CardTitle className="text-sm font-medium">Total des interventions</CardTitle>
+                  <FileText className="w-4 h-4 text-blue-600" />
+                </CardHeader>
+                <CardContent>
+                  <div className="text-2xl font-bold">
+                    {records.filter(r => r.type === 'intervention').length}
+                  </div>
+                </CardContent>
+              </Card>
+
+              <Card>
+                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                  <CardTitle className="text-sm font-medium">Total des réclamations</CardTitle>
+                  <AlertTriangle className="w-4 h-4 text-red-600" />
+                </CardHeader>
+                <CardContent>
+                  <div className="text-2xl font-bold">
+                    {records.filter(r => r.type === 'reclamation').length}
+                  </div>
+                </CardContent>
+              </Card>
+
+              <Card>
+                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                  <CardTitle className="text-sm font-medium">Ce mois-ci</CardTitle>
+                  <Calendar className="w-4 h-4 text-green-600" />
+                </CardHeader>
+                <CardContent>
+                  <div className="text-2xl font-bold">
+                    {records.filter(r => {
+                      const recordDate = new Date(r.createdAt);
+                      const now = new Date();
+                      return recordDate.getMonth() === now.getMonth() &&
+                             recordDate.getFullYear() === now.getFullYear();
+                    }).length}
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+
             {/* Quick Actions */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
               <Card className="cursor-pointer hover:shadow-lg transition-shadow" onClick={() => router.push('/interventions/new')}>
@@ -168,7 +248,7 @@ export default function DashboardPage() {
                   <FileText className="w-8 h-8 text-blue-600 mr-4" />
                   <div>
                     <CardTitle className="text-lg">Nouvelle intervention</CardTitle>
-                    <CardDescription>Créer une nouvelleintervention</CardDescription>
+                    <CardDescription>Créer une nouvelle intervention</CardDescription>
                   </div>
                 </CardHeader>
                 <CardContent>
@@ -269,54 +349,134 @@ export default function DashboardPage() {
                 </div>
               )}
             </div>
-
-            {/* Stats */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              <Card>
-                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                  <CardTitle className="text-sm font-medium">Total des interventions</CardTitle>
-                  <FileText className="w-4 h-4 text-blue-600" />
-                </CardHeader>
-                <CardContent>
-                  <div className="text-2xl font-bold">
-                    {records.filter(r => r.type === 'intervention').length}
-                  </div>
-                </CardContent>
-              </Card>
-
-              <Card>
-                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                  <CardTitle className="text-sm font-medium">Total des réclamations</CardTitle>
-                  <AlertTriangle className="w-4 h-4 text-red-600" />
-                </CardHeader>
-                <CardContent>
-                  <div className="text-2xl font-bold">
-                    {records.filter(r => r.type === 'reclamation').length}
-                  </div>
-                </CardContent>
-              </Card>
-
-              <Card>
-                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                  <CardTitle className="text-sm font-medium">Ce mois-ci</CardTitle>
-                  <Calendar className="w-4 h-4 text-green-600" />
-                </CardHeader>
-                <CardContent>
-                  <div className="text-2xl font-bold">
-                    {records.filter(r => {
-                      const recordDate = new Date(r.createdAt);
-                      const now = new Date();
-                      return recordDate.getMonth() === now.getMonth() &&
-                             recordDate.getFullYear() === now.getFullYear();
-                    }).length}
-                  </div>
-                </CardContent>
-              </Card>
-            </div>
           </>
-        ) : (
-          <RecordsTable records={records} onExport={handleExport} />
         )}
+
+        {activeSection === 'interventions' && (
+          <div>
+            <h2 className="text-2xl font-bold text-gray-900 mb-4">Toutes les interventions</h2>
+            {records.filter(r => r.type === 'intervention').length === 0 ? (
+              <Card>
+                <CardContent className="flex flex-col items-center justify-center py-12">
+                  <FileText className="w-12 h-12 text-gray-400 mb-4" />
+                  <h3 className="text-lg font-medium text-gray-900 mb-2">Aucune intervention trouvée</h3>
+                  <p className="text-gray-600 text-center mb-4">
+                    Créez votre première intervention pour commencer.
+                  </p>
+                  <Button onClick={() => router.push('/interventions/new')}>
+                    <Plus className="w-4 h-4 mr-2" />
+                    Nouvelle intervention
+                  </Button>
+                </CardContent>
+              </Card>
+            ) : (
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {records.filter(r => r.type === 'intervention').map((record) => (
+                  <Card key={record._id} className="hover:shadow-lg transition-shadow">
+                    <CardHeader className="pb-3">
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center">
+                          {getRecordIcon(record.type)}
+                          <CardTitle className="text-lg ml-2 capitalize">
+                            {record.type}
+                          </CardTitle>
+                        </div>
+                        <span className="text-xs text-gray-500">
+                          {formatDate(record.createdAt)}
+                        </span>
+                      </div>
+                      <CardDescription className="font-medium">
+                        {getRecordTitle(record)}
+                      </CardDescription>
+                    </CardHeader>
+                    <CardContent>
+                      <div className="space-y-2">
+                        <div className="flex items-center text-sm text-gray-600">
+                          <Calendar className="w-4 h-4 mr-2" />
+                          {getRecordSubtitle(record)}
+                        </div>
+                        {record.teamMembers && (
+                          <div className="flex items-center text-sm text-gray-600">
+                            <Users className="w-4 h-4 mr-2" />
+                            {record.teamMembers.length} team member{record.teamMembers.length !== 1 ? 's' : ''}
+                          </div>
+                        )}
+                        {record.siteName && (
+                          <div className="flex items-center text-sm text-gray-600">
+                            <MapPin className="w-4 h-4 mr-2" />
+                            {record.siteName}
+                          </div>
+                        )}
+                      </div>
+                    </CardContent>
+                  </Card>
+                ))}
+              </div>
+            )}
+          </div>
+        )}
+
+        {activeSection === 'reclamations' && (
+          <div>
+            <h2 className="text-2xl font-bold text-gray-900 mb-4">Toutes les réclamations</h2>
+            {records.filter(r => r.type === 'reclamation').length === 0 ? (
+              <Card>
+                <CardContent className="flex flex-col items-center justify-center py-12">
+                  <AlertTriangle className="w-12 h-12 text-gray-400 mb-4" />
+                  <h3 className="text-lg font-medium text-gray-900 mb-2">Aucune réclamation trouvée</h3>
+                  <p className="text-gray-600 text-center mb-4">
+                    Créez votre première réclamation pour commencer.
+                  </p>
+                  <Button onClick={() => router.push('/reclamations/new')}>
+                    <Plus className="w-4 h-4 mr-2" />
+                    Nouvelle réclamation
+                  </Button>
+                </CardContent>
+              </Card>
+            ) : (
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {records.filter(r => r.type === 'reclamation').map((record) => (
+                  <Card key={record._id} className="hover:shadow-lg transition-shadow">
+                    <CardHeader className="pb-3">
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center">
+                          {getRecordIcon(record.type)}
+                          <CardTitle className="text-lg ml-2 capitalize">
+                            {record.type}
+                          </CardTitle>
+                        </div>
+                        <span className="text-xs text-gray-500">
+                          {formatDate(record.createdAt)}
+                        </span>
+                      </div>
+                      <CardDescription className="font-medium">
+                        {getRecordTitle(record)}
+                      </CardDescription>
+                    </CardHeader>
+                    <CardContent>
+                      <div className="space-y-2">
+                        <div className="flex items-center text-sm text-gray-600">
+                          <Calendar className="w-4 h-4 mr-2" />
+                          {getRecordSubtitle(record)}
+                        </div>
+                        {record.description && (
+                          <p className="text-sm text-gray-600 line-clamp-2">
+                            {record.description}
+                          </p>
+                        )}
+                      </div>
+                    </CardContent>
+                  </Card>
+                ))}
+              </div>
+            )}
+          </div>
+        )}
+
+        {activeSection === 'records' && (
+          <RecordsTable records={records.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())} onExport={handleExport} />
+        )}
+        </div>
       </div>
       <Toaster />
     </div>
