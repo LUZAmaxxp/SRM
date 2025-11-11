@@ -88,7 +88,7 @@ export default function SignUpForm() {
                 size={isMedium ? "lg" : "xl"}
                 label="First Name"
                 placeholder="Enter your first name"
-                className="[&>label>span]:font-medium [&>label>span]:text-black"
+                className="[&>label>span]:font-medium [&>label>span]:text-black [&>div>input]:h-14"
                 {...register("firstName")}
                 error={errors.firstName?.message}
               />
@@ -97,7 +97,7 @@ export default function SignUpForm() {
                 size={isMedium ? "lg" : "xl"}
                 label="Last Name"
                 placeholder="Enter your last name"
-                className="[&>label>span]:font-medium [&>label>span]:text-black"
+                className="[&>label>span]:font-medium [&>label>span]:text-black [&>div>input]:h-14"
                 {...register("lastName")}
                 error={errors.lastName?.message}
               />
@@ -107,7 +107,7 @@ export default function SignUpForm() {
               size={isMedium ? "lg" : "xl"}
               label="Email"
               placeholder="Enter your email address"
-              className="[&>label>span]:font-medium [&>label>span]:text-black"
+              className="[&>label>span]:font-medium [&>label>span]:text-black [&>div>input]:h-14"
               {...register("email")}
               error={errors.email?.message}
             />
@@ -116,7 +116,7 @@ export default function SignUpForm() {
               placeholder="Create a strong password"
               size={isMedium ? "lg" : "xl"}
               {...register("password")}
-              className="[&>label>span]:font-medium [&>label>span]:text-black"
+              className="[&>label>span]:font-medium [&>label>span]:text-black [&>div>input]:h-14"
               error={errors.password?.message}
             />
             <Password
@@ -124,7 +124,7 @@ export default function SignUpForm() {
               placeholder="Confirm your password"
               size={isMedium ? "lg" : "xl"}
               {...register("confirmPassword")}
-              className="[&>label>span]:font-medium [&>label>span]:text-black"
+              className="[&>label>span]:font-medium [&>label>span]:text-black [&>div>input]:h-14"
               error={errors.confirmPassword?.message}
             />
             <div className="col-span-2 flex items-start text-gray-700">

@@ -97,7 +97,7 @@ export default function SignInForm() {
               size={isMedium ? "lg" : "xl"}
               label={t("form.form-email")}
               placeholder={t("form.form-email-placeholder")}
-              className="[&>label>span]:font-medium [&>label>span]:text-black"
+              className="[&>label>span]:font-medium [&>label>span]:text-black [&>div>input]:h-14"
               {...register("email")}
               error={errors.email?.message}
             />
@@ -105,7 +105,7 @@ export default function SignInForm() {
               label={t("form.form-password")}
               placeholder={t("form.form-password-placeholder")}
               size={isMedium ? "lg" : "xl"}
-              className="[&>label>span]:font-medium [&>label>span]:text-black"
+              className="[&>label>span]:font-medium [&>label>span]:text-black [&>div>input]:h-14"
               {...register("password")}
               error={errors.password?.message}
             />
