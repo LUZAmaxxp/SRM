@@ -295,7 +295,7 @@ Need help? Contact us at  allouchayman21@gmail.com
                 <h2 style="color:#333333;margin:0 0 20px 0;font-size:24px;font-weight:600;">Verify Your Email Address</h2>
                 
                 <p style="color:#333333;font-size:16px;line-height:1.6;margin:0 0 24px 0;">
-                  Thank you for joining the <strong>Tokenized Economies Institute</strong>! To complete your registration and secure your account, please verify your email address.
+                  Thank you for joining the <strong>SRM-SM</strong>! To complete your registration and secure your account, please verify your email address.
                 </p>
                 
                 <div style="text-align:center;margin:32px 0;">
