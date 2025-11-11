@@ -36,14 +36,14 @@ function createDetailsTable(data: BaseReportData & { type: string; typeValue: st
     },
     rows: [
       createTableRow("ID:", data._id || ""),
-      createTableRow("Employee Name:", data.employeeName),
+      createTableRow("Nom D'Employee :", data.employeeName),
       createTableRow("Employee ID:", data.employeeId),
-      createTableRow("Site Name:", data.siteName),
-      createTableRow("Station Name:", data.stationName),
+      createTableRow("Site:", data.siteName),
+      createTableRow("Station :", data.stationName),
       createTableRow(`${data.type}:`, data.typeValue),
-      createTableRow("Priority:", data.priority),
+      createTableRow("Prioritée:", data.priority),
       createTableRow("Status:", data.status),
-      createTableRow("Date Created:", data.createdAt ? new Date(data.createdAt).toLocaleDateString() : new Date().toLocaleDateString()),
+      createTableRow("Date Creation:", data.createdAt ? new Date(data.createdAt).toLocaleDateString() : new Date().toLocaleDateString()),
     ],
   });
 }
@@ -115,8 +115,6 @@ function createContentParagraph(text: string, spacingAfter = 400): Paragraph[] {
   return paragraphs;
 }
 
-
-
 // Helper function to create report title
 function createReportTitle(title: string | string[]): Paragraph[] {
   if (typeof title === 'string') {
@@ -164,7 +162,7 @@ function createPhotoSection(photoBuffer: Buffer | null): Paragraph[] {
             width: 400,
             height: 300,
           },
-          type: "png", // Specify image type
+          type: "png",
         }),
       ],
       spacing: { after: 400 },
@@ -193,11 +191,10 @@ function createLogoParagraph(): Paragraph {
   });
 }
 
-// Common function to generate report document
+// Common function to generate report document - FIXED STRUCTURE
 async function generateReportDoc(
   data: BaseReportData & { type: string; typeValue: string },
   reportTitle: string | string[],
-
 ): Promise<Buffer> {
   let photoBuffer: Buffer | null = null;
 
@@ -207,7 +204,6 @@ async function generateReportDoc(
     }
   } catch (error) {
     console.warn('Failed to fetch photo:', error);
-    // Continue without the photo if there's an error
   }
 
   const doc = new Document({
@@ -217,20 +213,17 @@ async function generateReportDoc(
         children: [
           // Logo
           createLogoParagraph(),
+          
           // Title
           ...createReportTitle(reportTitle),
 
           // Report Details Table
           createDetailsTable(data),
 
-          
-          ...createContentParagraph(data.description),
-
-          // Photo Section  
-          createSectionHeader("Photo:"),
+          // Photo Section - Moved to be right after the table like in your DOCX files
           ...createPhotoSection(photoBuffer),
 
-          // Recipients Section
+          // Report Recipients Section - Moved to be after photo like in your DOCX files
           createSectionHeader("Report Recipients:"),
           ...createContentParagraph(data.recipientEmails.join(", ")),
         ],
@@ -258,7 +251,7 @@ export async function generateInterventionDoc(data: InterventionData): Promise<B
   const company = companyMatch ? companyMatch[1].trim() : '';
 
   // Create formatted description with bold labels
-  const descriptionWithLabels = `**Intervention by Team:** ${team}\n**Dates:** ${dates}\n**Company:** ${company}`;
+  const descriptionWithLabels = `**Intervention Par L'Equipe:** ${team}\n**Dates:** ${dates}\n**Entreprise:** ${company}`;
 
   return generateReportDoc(
     {
@@ -272,8 +265,8 @@ export async function generateInterventionDoc(data: InterventionData): Promise<B
 }
 
 export async function generateReclamationDoc(data: ReclamationData): Promise<Buffer> {
-  // Create formatted description with form data and description label near the content
-  const descriptionWithLabels = `**Reclamation Type:** ${data.reclamationType}\n**Date:** ${data.date ? new Date(data.date).toLocaleDateString() : ''}\n**Station Name:** ${data.stationName}\n\n**Description:** ${data.description}`;
+  // Create formatted description with form data
+  const descriptionWithLabels = `**Type de Reclamation :** ${data.reclamationType}\n**Date:** ${data.date ? new Date(data.date).toLocaleDateString() : ''}\n**Nom de Station:** ${data.stationName}\n\n**Description:** ${data.description}`;
 
   return generateReportDoc(
     {
