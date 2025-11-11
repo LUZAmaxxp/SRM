@@ -10,11 +10,16 @@ function CheckEmailContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const [email, setEmail] = useState<string>("");
+  const [isResetPassword, setIsResetPassword] = useState<boolean>(false);
 
   useEffect(() => {
     const emailParam = searchParams.get("email");
+    const typeParam = searchParams.get("type");
     if (emailParam) {
       setEmail(emailParam);
+    }
+    if (typeParam === "reset") {
+      setIsResetPassword(true);
     }
   }, [searchParams]);
 
@@ -22,22 +27,40 @@ function CheckEmailContent() {
     if (!email) return;
 
     try {
-      const response = await fetch("/api/auth/email/send-verification", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ email }),
-      });
+      if (isResetPassword) {
+        // Resend password reset email
+        const response = await fetch("/api/auth/reset-password", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ email }),
+        });
 
-      if (response.ok) {
-        alert("Verification email sent successfully!");
+        if (response.ok) {
+          alert("Password reset email sent successfully!");
+        } else {
+          alert("Failed to send password reset email. Please try again.");
+        }
       } else {
-        alert("Failed to send verification email. Please try again.");
+        // Resend verification email
+        const response = await fetch("/api/auth/email/send-verification", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ email }),
+        });
+
+        if (response.ok) {
+          alert("Verification email sent successfully!");
+        } else {
+          alert("Failed to send verification email. Please try again.");
+        }
       }
     } catch (error) {
       console.error("Error resending email:", error);
-      alert("Failed to send verification email. Please try again.");
+      alert(`Failed to send ${isResetPassword ? "password reset" : "verification"} email. Please try again.`);
     }
   };
 
@@ -64,18 +87,22 @@ function CheckEmailContent() {
         {/* Main Message */}
         <div className="space-y-4">
           <h3 className="text-xl font-semibold text-gray-900">
-            Verification Email Sent!
+            {isResetPassword ? "Password Reset Email Sent!" : "Verification Email Sent!"}
           </h3>
           <div className="space-y-3 text-gray-600">
-            <p>We&apos;ve sent a verification link to:</p>
+            <p>
+              We&apos;ve sent {isResetPassword ? "a password reset link" : "a verification link"} to:
+            </p>
             {email && (
               <p className="font-medium text-gray-900 bg-gray-50 px-4 py-2 rounded-lg">
                 {email}
               </p>
             )}
             <p className="text-sm">
-              Please check your email and click on the verification link to
-              activate your account.
+              {isResetPassword
+                ? "Please check your email and click on the password reset link to create a new password."
+                : "Please check your email and click on the verification link to activate your account."
+              }
             </p>
           </div>
         </div>
@@ -113,7 +140,7 @@ function CheckEmailContent() {
             className="w-full"
             disabled={!email}
           >
-            Resend Verification Email
+            Resend {isResetPassword ? "Password Reset" : "Verification"} Email
           </Button>
 
           <div className="flex gap-3">
@@ -139,7 +166,7 @@ function CheckEmailContent() {
           <p className="text-sm text-gray-500">
             Still having trouble?{" "}
             <a
-              href="mailto:support@tokenizedeconomies.org"
+              href="mailto:allouchayman21@gmail.com"
               className="text-primary hover:text-primary/80 font-medium"
             >
               Contact Support

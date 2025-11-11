@@ -54,7 +54,7 @@ export const auth = betterAuth({
               <div style="max-width:600px;margin:0 auto;background:#ffffff;border:1px solid rgba(0,0,0,0.1);">
                 <!-- Header -->
                 <div style="background:#ffffff;padding:40px 32px;text-align:center;border-bottom:1px solid rgba(0,0,0,0.1);">
-                  <img src="${url.split("/api")[0]}/TEIlogo.png" alt="srm-sm" style="width:120px;height:auto;margin-bottom:24px;" />
+                  <img src="${url.split("/api")[0]}/LOGO-SOUSS-MASSA-1033x308px-removebg-preview.png" alt="SRM-SM" style="width:120px;height:auto;margin-bottom:24px;" />
                   <h1 style="color:#333333;margin:0;font-size:28px;font-weight:700;letter-spacing:-0.5px;">Magic Link Sign In</h1>
                   <p style="color:#666666;margin:12px 0 0 0;font-size:16px;">Secure passwordless access to your account</p>
                 </div>
@@ -129,6 +129,11 @@ export const auth = betterAuth({
     sendResetPassword: async (
       { user, url }: { user: Record<string, unknown>; url: string }
     ) => {
+      // Extract token from the API URL and construct frontend URL
+      const urlObj = new URL(url);
+      const pathnameParts = urlObj.pathname.split('/');
+      const token = pathnameParts[pathnameParts.length - 1];
+      const finalUrl = `${urlObj.origin}/auth/reset-password?token=${token}&email=${user.email}`;
       // Use nodemailer to send the reset password email
       const nodemailer = await import("nodemailer");
 
@@ -167,7 +172,7 @@ export const auth = betterAuth({
             <div style="max-width:600px;margin:0 auto;background:#ffffff;border:1px solid rgba(0,0,0,0.1);">
               <!-- Header -->
               <div style="background:#ffffff;padding:40px 32px;text-align:center;border-bottom:1px solid rgba(0,0,0,0.1);">
-                <img src="${url.split("/api")[0]}/TEIlogo.png" alt="SRM-SM" style="width:120px;height:auto;margin-bottom:24px;" />
+                <img src="${url.split("/api")[0]}/LOGO-SOUSS-MASSA-1033x308px-removebg-preview.png" alt="SRM-SM" style="width:120px;height:auto;margin-bottom:24px;" />
                 <h1 style="color:#333333;margin:0;font-size:28px;font-weight:700;letter-spacing:-0.5px;">Password Reset Request</h1>
                 <p style="color:#666666;margin:12px 0 0 0;font-size:16px;">Secure password recovery for your account</p>
               </div>
@@ -182,7 +187,7 @@ export const auth = betterAuth({
                 </p>
                 
                 <div style="text-align:center;margin:32px 0;">
-                  <a href="${url}" style="display:inline-block;background:#ef4444;color:#ffffff;text-decoration:none;padding:16px 32px;border-radius:25px;font-weight:600;font-size:16px;box-shadow:0 4px 12px rgba(239,68,68,0.4);transition:all 0.3s ease;">
+                  <a href="${finalUrl}" style="display:inline-block;background:#ef4444;color:#ffffff;text-decoration:none;padding:16px 32px;border-radius:25px;font-weight:600;font-size:16px;box-shadow:0 4px 12px rgba(239,68,68,0.4);transition:all 0.3s ease;">
                     Reset My Password
                   </a>
                 </div>
@@ -285,7 +290,7 @@ Need help? Contact us at  allouchayman21@gmail.com
             <div style="max-width:600px;margin:0 auto;background:#ffffff;border:1px solid rgba(0,0,0,0.1);">
               <!-- Header -->
               <div style="background:#ffffff;padding:40px 32px;text-align:center;border-bottom:1px solid rgba(0,0,0,0.1);">
-                <img src="${url.split("/api")[0]}/TEIlogo.png" alt="SRM-SM" style="width:120px;height:auto;margin-bottom:24px;" />
+                <img src="${url.split("/api")[0]}/LOGO-SOUSS-MASSA-1033x308px-removebg-preview.png" alt="SRM-SM" style="width:120px;height:auto;margin-bottom:24px;" />
                 <h1 style="color:#333333;margin:0;font-size:28px;font-weight:700;letter-spacing:-0.5px;">Welcome to SRM-SM!</h1>
                 <p style="color:#666666;margin:12px 0 0 0;font-size:16px;">Sociéte Regionale Multiservices - SOUSS MASSA</p>
               </div>
@@ -335,6 +340,7 @@ Need help? Contact us at  allouchayman21@gmail.com
   },
   resetPassword: {
     enabled: true,
+    redirectTo: "/auth/reset-password",
   },
   emailProvider: {
     host: MAIL.host,

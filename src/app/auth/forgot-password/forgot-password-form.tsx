@@ -4,6 +4,7 @@ import { Link } from "@/hooks/use-navigation";
 import toast from "react-hot-toast";
 import { useState } from "react";
 import { SubmitHandler } from "react-hook-form";
+import { useRouter } from "next/navigation";
 import { Button, Input } from "rizzui";
 import { useMedia } from "@core/hooks/use-media";
 import { Form } from "@core/ui/form";
@@ -23,6 +24,7 @@ export default function ForgetPasswordForm() {
   const { t} = useTranslations();
   const { t: tAuth } = useTranslations();
   const isMedium = useMedia("(max-width: 1200px)", false);
+  const router = useRouter();
   const [reset, setReset] = useState<ForgetPasswordSchema>(initialValues);
   const [isLoading, setIsLoading] = useState(false);
 
@@ -42,6 +44,8 @@ export default function ForgetPasswordForm() {
       } else {
         toast.success("Password reset email sent! Please check your email.");
         setReset(initialValues);
+        // Redirect to check-email page with email parameter and type=reset
+        router.push(`/auth/check-email?email=${encodeURIComponent(data.email)}&type=reset`);
       }
     } catch (error) {
       console.error("Forgot password error:", JSON.stringify(error, null, 2));
