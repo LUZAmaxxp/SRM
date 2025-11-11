@@ -9,7 +9,7 @@ export default function SignUpPage() {
   return (
     <AuthWrapperFour
       title={t('auth.auth-sign-up-4-welcome-message')}
-      isSocialLoginActive={true}
+      isSocialLoginActive={false}
     >
       <SignUpForm />
     </AuthWrapperFour>

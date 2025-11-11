@@ -347,10 +347,10 @@ Need help? Contact us at  allouchayman21@gmail.com
     from: MAIL.from || "no-reply@fevertokens.io",
   },
   socialProviders: {
-    google: {
-      clientId: process.env.GOOGLE_CLIENT_ID!,
-      clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
-    },
+    // google: {
+    //   clientId: process.env.GOOGLE_CLIENT_ID!,
+    //   clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
+    // },
   },
   secret:
     process.env.BETTER_AUTH_SECRET ||

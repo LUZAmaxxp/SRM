@@ -122,7 +122,7 @@ export default function MagicLinkForm() {
             size={isMedium ? "lg" : "xl"}
             label="Email"
             placeholder="Enter your email address"
-            className="[&>label>span]:font-medium [&>label>span]:text-black"
+            className="[&>label>span]:font-medium [&>label>span]:text-black [&>div>input]:h-14"
             {...register("email")}
             error={errors.email?.message}
           />

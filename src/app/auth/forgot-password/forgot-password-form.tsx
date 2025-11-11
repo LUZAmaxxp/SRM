@@ -68,7 +68,7 @@ export default function ForgetPasswordForm() {
               size={isMedium ? "lg" : "xl"}
               label={t("form.form-email")}
               placeholder={t("form.form-email-placeholder")}
-              className="[&>label>span]:font-medium"
+              className="[&>label>span]:font-medium [&>div>input]:h-14"
               {...register("email")}
               error={errors.email?.message}
             />

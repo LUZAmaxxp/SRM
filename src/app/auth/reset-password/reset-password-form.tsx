@@ -97,7 +97,7 @@ function ResetPasswordFormContent() {
               size={isMedium ? "lg" : "xl"}
               label={t("form.form-email")}
               placeholder={t("form.form-email-placeholder")}
-              className="[&>label>span]:font-medium"
+              className="[&>label>span]:font-medium [&>div>input]:h-14"
               {...register("email")}
               error={errors.email?.message}
               disabled
@@ -107,7 +107,7 @@ function ResetPasswordFormContent() {
               label={t("form.form-new-password-label")}
               placeholder={t("form.form-new-password")}
               size={isMedium ? "lg" : "xl"}
-              className="[&>label>span]:font-medium"
+              className="[&>label>span]:font-medium [&>div>input]:h-14"
               {...register("password")}
               error={errors.password?.message}
             />
@@ -115,7 +115,7 @@ function ResetPasswordFormContent() {
               label={t("form.form-confirm-password-label")}
               placeholder={t("form.form-confirm-password")}
               size={isMedium ? "lg" : "xl"}
-              className="[&>label>span]:font-medium"
+              className="[&>label>span]:font-medium [&>div>input]:h-14"
               {...register("confirmPassword")}
               error={errors.confirmPassword?.message}
             />

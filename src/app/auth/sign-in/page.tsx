@@ -22,7 +22,7 @@ export default function SignInPage() {
     <AuthWrapperFour
       title={`${t('auth.auth-sign-in-4-welcome-back')} ${t('auth.auth-sign-in-4-subtitle')}`}
       isSignIn
-      isSocialLoginActive={true}
+      isSocialLoginActive={false}
     >
         <div className="space-y-6">
           {/* Show the appropriate form - Magic Link by default */}
