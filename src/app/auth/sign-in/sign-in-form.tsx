@@ -7,7 +7,7 @@ import { useMedia } from "@core/hooks/use-media";
 import { Form } from "@core/ui/form";
 import { routes } from "@/config/routes";
 import { loginSchema, LoginSchema } from "@/validators/login.schema";
-import { useTranslations } from '@/hooks/use-translations';
+import { useTranslation } from '@/lib/i18n-context';
 import { storeAuthToken, getAuthToken } from "@/utils/auth-storage";
 import { authClient } from "@/lib/auth-client";
 import toast from "react-hot-toast";
@@ -19,7 +19,7 @@ const initialValues: LoginSchema = {
 };
 
 export default function SignInForm() {
-  const { t } = useTranslations();
+  const { t } = useTranslation();
   const isMedium = useMedia("(max-width: 1200px)", false);
   const [isLoading, setIsLoading] = useState(false);
   const [reset, setReset] = useState<LoginSchema>(initialValues);

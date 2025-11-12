@@ -3,7 +3,7 @@ import mongoose from 'mongoose';
 // Intervention Schema
 const InterventionSchema = new mongoose.Schema({
   userId: {
-    type: mongoose.Schema.Types.ObjectId,
+    type: String,
     required: true,
     ref: 'User' // Reference to BetterAuth User
   },
@@ -54,7 +54,7 @@ const InterventionSchema = new mongoose.Schema({
 // Reclamation Schema
 const ReclamationSchema = new mongoose.Schema({
   userId: {
-    type: mongoose.Schema.Types.ObjectId,
+    type: String,
     required: true,
     ref: 'User' // Reference to BetterAuth User
   },
@@ -98,7 +98,7 @@ const ReclamationSchema = new mongoose.Schema({
 // User Settings Schema
 const UserSettingsSchema = new mongoose.Schema({
   userId: {
-    type: mongoose.Schema.Types.ObjectId,
+    type: String,
     required: true,
     ref: 'User', // Reference to BetterAuth User
     unique: true

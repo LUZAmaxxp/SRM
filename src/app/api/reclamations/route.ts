@@ -4,6 +4,7 @@ import dbConnect from '@/lib/db';
 import { Reclamation } from '@/lib/models';
 import { generateReclamationDoc } from '@/lib/docx-generator';
 import { emailService } from '@/lib/email-service';
+import { checkRateLimit } from '@/lib/rate-limiter';
 
 export async function POST(request: NextRequest) {
   try {
@@ -21,6 +22,15 @@ export async function POST(request: NextRequest) {
 
     // Connect to database
     await dbConnect();
+
+    // Check rate limit
+    const withinLimit = await checkRateLimit(session.user.id);
+    if (!withinLimit) {
+      return NextResponse.json(
+        { error: 'Rate limit exceeded. You can only submit up to 15 interventions and reclamations per day.' },
+        { status: 429 }
+      );
+    }
 
     // Parse request body
     const body = await request.json();

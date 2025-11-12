@@ -1,31 +1,14 @@
-# i18n Implementation Plan
+# Admin Dashboard Implementation
 
-## Current State Analysis
-- Next.js app with next-intl for i18n
-- 4 languages: en, fr, es, ar
-- I18nProvider sets initial locale to 'fr'
-- Settings page allows language change
-- Language stored in localStorage and settings store
-- Auth pages use separate translation system
+## Pending Tasks
+- [ ] Create admin dashboard page at /admin with email-based access control
+- [ ] Create API endpoint to fetch all users with their interventions/reclamations
+- [ ] Modify export API to support admin export of all users' data
+- [ ] Create admin table component for displaying users and their submissions
+- [ ] Update navigation/sidebar to show admin link for authorized users
+- [ ] Test admin access and functionality
 
-## Issues Identified
-- i18n.ts defaults to 'en' instead of 'fr'
-- Settings store initial language is 'en-US' instead of 'fr'
-- Language change needs to persist globally
-- Need to ensure all pages use i18n context
-
-## Tasks
-- [ ] Update i18n.ts default locale to 'fr'
-- [ ] Update settings-store initial language to 'fr'
-- [ ] Ensure language change applies to all pages
-- [ ] Verify JSON files are complete
-- [ ] Test language switching functionality
-- [ ] Update layout to use dynamic locale
-- [ ] Ensure middleware handles locale properly
-
-## Files to Modify
-- i18n.ts
-- src/lib/settings-store.ts
-- src/app/layout.tsx
-- middleware.ts (if needed)
-- Verify all page components use useTranslation or useI18n
+## Completed Tasks
+- [x] Analyze existing codebase and understand structure
+- [x] Review export API, dashboard, and models
+- [x] Plan implementation approach

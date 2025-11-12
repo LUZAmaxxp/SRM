@@ -11,7 +11,7 @@ import { signUpSchema, SignUpSchema } from "@/validators/signup.schema";
 import { Modal } from "@core/modal-views/modal";
 import { authClient } from "@/lib/auth-client";
 import toast from "react-hot-toast";
-import { useTranslations } from "@/hooks/use-translations";
+import { useTranslation } from "@/lib/i18n-context";
 
 const initialValues = {
   firstName: "",
@@ -28,7 +28,8 @@ export default function SignUpForm() {
   const [isLoading, setIsLoading] = useState(false);
   const [showUserExistsDialog, setShowUserExistsDialog] = useState(false);
   const router = useRouter();
-  const { t } = useTranslations();
+  const { t } = useTranslation();
+  
 
   const onSubmit: SubmitHandler<SignUpSchema> = async (data) => {
     setIsLoading(true);
@@ -38,6 +39,7 @@ export default function SignUpForm() {
         name: `${data.firstName} ${data.lastName}`.trim(),
         email: data.email,
         password: data.password,
+      
       });
 
       if (error) {
@@ -88,8 +90,8 @@ export default function SignUpForm() {
               <Input
                 type="text"
                 size={isMedium ? "lg" : "xl"}
-                label="First Name"
-                placeholder="Enter your first name"
+                label={t("form.form-first-name")}
+                placeholder={t("form.form-first-name-placeholder")}
                 className="[&>label>span]:font-medium [&>label>span]:text-black [&>div>input]:h-14"
                 {...register("firstName")}
                 error={errors.firstName?.message}
@@ -97,8 +99,8 @@ export default function SignUpForm() {
               <Input
                 type="text"
                 size={isMedium ? "lg" : "xl"}
-                label="Last Name"
-                placeholder="Enter your last name"
+                label={t("form.form-last-name")}
+                placeholder={t("form.form-last-name-placeholder")}
                 className="[&>label>span]:font-medium [&>label>span]:text-black [&>div>input]:h-14"
                 {...register("lastName")}
                 error={errors.lastName?.message}
@@ -107,23 +109,23 @@ export default function SignUpForm() {
             <Input
               type="email"
               size={isMedium ? "lg" : "xl"}
-              label="Email"
-              placeholder="Enter your email address"
+              label={t("form.form-email")}
+              placeholder={t("form.form-email-placeholder")}
               className="[&>label>span]:font-medium [&>label>span]:text-black [&>div>input]:h-14"
               {...register("email")}
               error={errors.email?.message}
             />
             <Password
-              label="Password"
-              placeholder="Create a strong password"
+              label={t("form.form-password")}
+              placeholder={t("form.form-password-placeholder")}
               size={isMedium ? "lg" : "xl"}
               {...register("password")}
               className="[&>label>span]:font-medium [&>label>span]:text-black [&>div>input]:h-14"
               error={errors.password?.message}
             />
             <Password
-              label="Confirm Password"
-              placeholder="Confirm your password"
+              label={t("form.form-confirm-password")}
+              placeholder={t("form.form-confirm-password-placeholder")}
               size={isMedium ? "lg" : "xl"}
               {...register("confirmPassword")}
               className="[&>label>span]:font-medium [&>label>span]:text-black [&>div>input]:h-14"

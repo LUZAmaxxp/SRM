@@ -4,6 +4,7 @@ import dbConnect from '@/lib/db';
 import { Intervention } from '@/lib/models';
 import { generateInterventionDoc } from '@/lib/docx-generator';
 import { Resend } from 'resend';
+import { checkRateLimit } from '@/lib/rate-limiter';
 
 const resend = new Resend(process.env.RESEND_API_KEY || 'dummy-key');
 
@@ -23,6 +24,15 @@ export async function POST(request: NextRequest) {
 
     // Connect to database
     await dbConnect();
+
+    // Check rate limit
+    const withinLimit = await checkRateLimit(session.user.id);
+    if (!withinLimit) {
+      return NextResponse.json(
+        { error: 'Rate limit exceeded. You can only submit up to 15 interventions and reclamations per day.' },
+        { status: 429 }
+      );
+    }
 
     // Parse request body
     const body = await request.json();

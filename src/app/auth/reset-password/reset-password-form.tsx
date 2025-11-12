@@ -14,10 +14,10 @@ import {
   ResetPasswordSchema,
 } from "@/validators/reset-password.schema";
 import { authClient } from "@/lib/auth-client";
-import { useTranslations } from "@/hooks/use-translations";
+import { useTranslation } from "@/lib/i18n-context";
 
 function ResetPasswordFormContent() {
-  const { t } = useTranslations();
+  const { t } = useTranslation();
   const isMedium = useMedia("(max-width: 1200px)", false);
   const [isLoading, setIsLoading] = useState(false);
   const [email, setEmail] = useState("");

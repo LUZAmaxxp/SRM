@@ -13,7 +13,7 @@ import {
   forgetPasswordSchema,
   ForgetPasswordSchema,
 } from "@/validators/forget-password.schema";
-import { useTranslations } from "@/hooks/use-translations";
+import { useTranslation } from "@/lib/i18n-context";
 import { authClient } from "@/lib/auth-client";
 
 const initialValues = {
@@ -21,8 +21,7 @@ const initialValues = {
 };
 
 export default function ForgetPasswordForm() {
-  const { t} = useTranslations();
-  const { t: tAuth } = useTranslations();
+  const { t } = useTranslation();
   const isMedium = useMedia("(max-width: 1200px)", false);
   const router = useRouter();
   const [reset, setReset] = useState<ForgetPasswordSchema>(initialValues);
@@ -82,18 +81,18 @@ export default function ForgetPasswordForm() {
               size={isMedium ? "lg" : "xl"}
               isLoading={isLoading}
             >
-              {tAuth("auth.auth-reset-password")}
+              {t("auth.auth-reset-password")}
             </Button>
           </div>
         )}
       </Form>
       <p className="mt-6 text-center text-[15px] leading-loose text-gray-500 md:mt-7 lg:mt-9 lg:text-base">
-        {tAuth("auth.auth-dont-want-to-reset")}{" "}
+        {t("auth.auth-dont-want-to-reset")}{" "}
         <Link
           href={routes.auth.signIn}
           className="font-semibold text-gray-700 transition-colors hover:text-primary"
         >
-          {tAuth("auth.auth-sign-in")}
+          {t("auth.auth-sign-in")}
         </Link>
       </p>
     </>

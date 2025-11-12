@@ -8,12 +8,14 @@ export const signUpSchema = () =>
     firstName: z.string().min(1, { message: messages.firstNameRequired }),
     lastName: z.string().optional(),
     email: validateEmail(),
+  
     password: validatePassword(),
     confirmPassword: validateConfirmPassword(),
     isAgreed: z.boolean(),
   }).refine((data) => data.password === data.confirmPassword, {
     message: messages.passwordsDidNotMatch,
     path: ["confirmPassword"],
+    
   });
 
 // generate form types from zod validation schema

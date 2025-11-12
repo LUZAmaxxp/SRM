@@ -90,7 +90,7 @@ export function I18nProvider({ children, initialLocale = 'fr' as Locale }: { chi
         // ignore storage errors
       }
     }
-  }, [session]);
+  }, [session, locale]);
 
   return (
     <I18nContext.Provider value={{ locale, setLocale, messages }}>

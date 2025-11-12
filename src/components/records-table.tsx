@@ -7,7 +7,7 @@ import { Badge } from '@/components/ui/badge';
 import { Download, FileText, AlertTriangle } from 'lucide-react';
 import Image from 'next/image';
 import toast from 'react-hot-toast';
-import { messages } from '@/config/messages';
+import { useTranslation } from '@/lib/i18n-context';
 
 interface Record {
   _id: string;
@@ -35,6 +35,7 @@ interface RecordsTableProps {
 }
 
 export default function RecordsTable({ records, }: RecordsTableProps) {
+  const { t } = useTranslation();
   const [selectedRecord, setSelectedRecord] = useState<Record | null>(null);
 
   const formatDate = (dateString: string) => {
@@ -92,42 +93,42 @@ export default function RecordsTable({ records, }: RecordsTableProps) {
       {/* Header with Export Button */}
       <div className="flex justify-between items-center">
         <div>
-          <h2 className="text-2xl font-bold text-gray-900">{messages["records.all-records"]}</h2>
-          <p className="text-gray-600">{messages["records.manage-desc"]}</p>
+          <h2 className="text-2xl font-bold text-gray-900">{t('records.all-records')}</h2>
+          <p className="text-gray-600">{t('records.manage-desc')}</p>
         </div>
         <Button onClick={handleExport} className="flex items-center gap-2">
           <Download className="w-4 h-4" />
-          {messages["records.export-excel"]}
+          {t('records.export-excel')}
         </Button>
       </div>
 
       {/* Records Table */}
       <Card>
         <CardHeader>
-          <CardTitle>{messages["records.records-overview"]}</CardTitle>
+          <CardTitle>{t('records.records-overview')}</CardTitle>
         </CardHeader>
         <CardContent>
           {records.length === 0 ? (
             <div className="text-center py-8">
               <FileText className="w-12 h-12 text-gray-400 mx-auto mb-4" />
-              <h3 className="text-lg font-medium text-gray-900 mb-2">{messages["records.no-records-found"]}</h3>
-              <p className="text-gray-600">{messages["records.create-first"]}</p>
+              <h3 className="text-lg font-medium text-gray-900 mb-2">{t('records.no-records-found')}</h3>
+              <p className="text-gray-600">{t('records.create-first')}</p>
             </div>
           ) : (
             <div className="overflow-x-auto">
               <table className="w-full">
                 <thead>
                   <tr className="border-b">
-                    <th className="text-left py-3 px-4 font-medium text-gray-900">{messages["table.type"]}</th>
-                    <th className="text-left py-3 px-4 font-medium text-gray-900">{messages["table.company-station"]}</th>
-                    <th className="text-left py-3 px-4 font-medium text-gray-900">{messages["table.responsible-person"]}</th>
-                    <th className="text-left py-3 px-4 font-medium text-gray-900">{messages["table.date-range"]}</th>
-                    <th className="text-left py-3 px-4 font-medium text-gray-900">{messages["table.site-type"]}</th>
-                    <th className="text-left py-3 px-4 font-medium text-gray-900">{messages["table.team-members"]}</th>
-                    <th className="text-left py-3 px-4 font-medium text-gray-900">{messages["table.description"]}</th>
-                    <th className="text-left py-3 px-4 font-medium text-gray-900">{messages["table.photo"]}</th>
-                    <th className="text-left py-3 px-4 font-medium text-gray-900">{messages["table.recipients"]}</th>
-                    <th className="text-left py-3 px-4 font-medium text-gray-900">{messages["table.created-at"]}</th>
+                    <th className="text-left py-3 px-4 font-medium text-gray-900">{t('table.type')}</th>
+                    <th className="text-left py-3 px-4 font-medium text-gray-900">{t('table.company-station')}</th>
+                    <th className="text-left py-3 px-4 font-medium text-gray-900">{t('table.responsible-person')}</th>
+                    <th className="text-left py-3 px-4 font-medium text-gray-900">{t('table.date-range')}</th>
+                    <th className="text-left py-3 px-4 font-medium text-gray-900">{t('table.site-type')}</th>
+                    <th className="text-left py-3 px-4 font-medium text-gray-900">{t('table.team-members')}</th>
+                    <th className="text-left py-3 px-4 font-medium text-gray-900">{t('table.description')}</th>
+                    <th className="text-left py-3 px-4 font-medium text-gray-900">{t('table.photo')}</th>
+                    <th className="text-left py-3 px-4 font-medium text-gray-900">{t('table.recipients')}</th>
+                    <th className="text-left py-3 px-4 font-medium text-gray-900">{t('table.created-at')}</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -222,7 +223,7 @@ export default function RecordsTable({ records, }: RecordsTableProps) {
               <div className="flex items-center justify-between mb-4">
                 <div className="flex items-center gap-2">
                   {getRecordIcon(selectedRecord.type)}
-                  <h3 className="text-xl font-bold capitalize">{selectedRecord.type === 'intervention' ? messages["records.intervention-details"] : messages["records.reclamation-details"]}</h3>
+                  <h3 className="text-xl font-bold capitalize">{selectedRecord.type === 'intervention' ? t('records.intervention-details') : t('records.reclamation-details')}</h3>
                 </div>
                 <Button variant="outline" onClick={() => setSelectedRecord(null)}>
                   ×
@@ -234,36 +235,36 @@ export default function RecordsTable({ records, }: RecordsTableProps) {
                   <>
                     <div className="grid grid-cols-2 gap-4">
                       <div>
-                        <label className="font-medium text-gray-700">{messages["records.company-name"]}</label>
+                        <label className="font-medium text-gray-700">{t('records.company-name')}</label>
                         <p className="text-gray-900">{selectedRecord.entrepriseName}</p>
                       </div>
                       <div>
-                        <label className="font-medium text-gray-700">{messages["records.responsible-person"]}</label>
+                        <label className="font-medium text-gray-700">{t('records.responsible-person')}</label>
                         <p className="text-gray-900">{selectedRecord.responsable}</p>
                       </div>
                       <div>
-                        <label className="font-medium text-gray-700">{messages["records.site-name"]}</label>
+                        <label className="font-medium text-gray-700">{t('records.site-name')}</label>
                         <p className="text-gray-900">{selectedRecord.siteName}</p>
                       </div>
                       <div>
-                        <label className="font-medium text-gray-700">{messages["records.start-date"]}</label>
+                        <label className="font-medium text-gray-700">{t('records.start-date')}</label>
                         <p className="text-gray-900">{formatDate(selectedRecord.startDate!)}</p>
                       </div>
                       <div>
-                        <label className="font-medium text-gray-700">{messages["records.end-date"]}</label>
+                        <label className="font-medium text-gray-700">{t('records.end-date')}</label>
                         <p className="text-gray-900">{formatDate(selectedRecord.endDate!)}</p>
                       </div>
                       <div>
-                        <label className="font-medium text-gray-700">{messages["records.team-members"]}</label>
+                        <label className="font-medium text-gray-700">{t('records.team-members')}</label>
                         <p className="text-gray-900">{selectedRecord.teamMembers?.join(', ')}</p>
                       </div>
                     </div>
                     {selectedRecord.photoUrl && (
                       <div>
-                        <label className="font-medium text-gray-700">{messages["records.photo"]}</label>
+                        <label className="font-medium text-gray-700">{t('records.photo')}</label>
                         <Image
                           src={selectedRecord.photoUrl}
-                          alt={messages["records.intervention-photo"]}
+                          alt={t('records.intervention-photo')}
                           width={400}
                           height={300}
                           className="mt-2 max-w-full h-48 object-cover rounded"
@@ -275,30 +276,30 @@ export default function RecordsTable({ records, }: RecordsTableProps) {
                   <>
                     <div className="grid grid-cols-2 gap-4">
                       <div>
-                        <label className="font-medium text-gray-700">{messages["records.station-name"]}</label>
+                        <label className="font-medium text-gray-700">{t('records.station-name')}</label>
                         <p className="text-gray-900">{selectedRecord.stationName}</p>
                       </div>
                       <div>
-                        <label className="font-medium text-gray-700">{messages["records.reclamation-type"]}</label>
+                        <label className="font-medium text-gray-700">{t('records.reclamation-type')}</label>
                         <Badge className={getReclamationTypeColor(selectedRecord.reclamationType!)}>
                           {selectedRecord.reclamationType}
                         </Badge>
                       </div>
                       <div>
-                        <label className="font-medium text-gray-700">{messages["records.date"]}</label>
+                        <label className="font-medium text-gray-700">{t('records.date')}</label>
                         <p className="text-gray-900">{formatDate(selectedRecord.date!)}</p>
                       </div>
                       <div className="col-span-2">
-                        <label className="font-medium text-gray-700">{messages["records.description"]}</label>
+                        <label className="font-medium text-gray-700">{t('records.description')}</label>
                         <p className="text-gray-900">{selectedRecord.description}</p>
                       </div>
                     </div>
                     {selectedRecord.photoUrl && (
                       <div>
-                        <label className="font-medium text-gray-700">{messages["records.photo"]}</label>
+                        <label className="font-medium text-gray-700">{t('records.photo')}</label>
                         <Image
                           src={selectedRecord.photoUrl}
-                          alt={messages["records.reclamation-photo"]}
+                          alt={t('records.reclamation-photo')}
                           width={400}
                           height={300}
                           className="mt-2 max-w-full h-48 object-cover rounded"
@@ -309,12 +310,12 @@ export default function RecordsTable({ records, }: RecordsTableProps) {
                 )}
 
                 <div>
-                  <label className="font-medium text-gray-700">{messages["records.recipient-emails"]}</label>
+                  <label className="font-medium text-gray-700">{t('records.recipient-emails')}</label>
                   <p className="text-gray-900">{selectedRecord.recipientEmails?.join(', ')}</p>
                 </div>
 
                 <div>
-                  <label className="font-medium text-gray-700">{messages["records.created-at"]}</label>
+                  <label className="font-medium text-gray-700">{t('records.created-at')}</label>
                   <p className="text-gray-900">{formatDate(selectedRecord.createdAt)}</p>
                 </div>
               </div>

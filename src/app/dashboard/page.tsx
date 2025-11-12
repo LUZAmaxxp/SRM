@@ -43,7 +43,7 @@ export default function DashboardPage() {
   const [records, setRecords] = useState<Record[]>([]);
   const [loading, setLoading] = useState(true);
   const [authenticated, setAuthenticated] = useState(false);
-  const [activeSection, setActiveSection] = useState<'overview' | 'interventions' | 'reclamations' | 'records'>('overview');
+  const [activeSection, setActiveSection] = useState<'overview' | 'interventions' | 'reclamations' | 'records' | 'admin'>('overview');
   const router = useRouter();
   const { t } = useTranslation();
 
