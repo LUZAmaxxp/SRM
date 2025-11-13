@@ -68,7 +68,7 @@ export async function GET(request: NextRequest) {
     // For each user, fetch their interventions and reclamations
     const adminData = await Promise.all(
       users.map(async (user: UserDocument) => {
-        const userId = user._id;
+        const userId = user._id.toString();
 
         const interventions = await Intervention.find({ userId })
           .sort({ createdAt: -1 })
@@ -120,10 +120,7 @@ export async function GET(request: NextRequest) {
       })
     );
 
-    return NextResponse.json({
-      success: true,
-      data: adminData
-    });
+    return NextResponse.json(adminData);
 
   } catch (error) {
     console.error('Error fetching admin data:', error);

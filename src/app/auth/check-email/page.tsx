@@ -5,6 +5,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { Button } from "rizzui";
 import AuthWrapperFour from "@/app/shared/auth-layout/auth-wrapper-four";
 import { routes } from "@/config/routes";
+import toast from 'react-hot-toast';
 
 function CheckEmailContent() {
   const router = useRouter();
@@ -67,9 +68,9 @@ function CheckEmailContent() {
         });
 
         if (response.ok) {
-          alert(t("check-email.reset-success"));
+          toast.success(t("check-email.reset-success"));
         } else {
-          alert(t("check-email.reset-failed"));
+          toast.error(t("check-email.reset-failed"));
         }
       } else {
         // Resend verification email
@@ -82,14 +83,14 @@ function CheckEmailContent() {
         });
 
         if (response.ok) {
-          alert(t("check-email.verify-success"));
+          toast.success(t("check-email.verify-success"));
         } else {
-          alert(t("check-email.verify-failed"));
+          toast.error(t("check-email.verify-failed"));
         }
       }
     } catch (error) {
       console.error("Error resending email:", error);
-      alert(t("check-email.resend-failed"));
+      toast.error(t("check-email.resend-failed"));
     }
   };
 

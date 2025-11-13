@@ -6,6 +6,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Upload, X, Image as ImageIcon } from 'lucide-react';
 import Image from 'next/image';
+import toast from 'react-hot-toast';
 
 interface FileUploadProps {
   onFileSelect: (file: File | null) => void;
@@ -32,14 +33,14 @@ export function FileUpload({
     // Validate file type
     const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp'];
     if (!allowedTypes.includes(file.type)) {
-      alert('Invalid file type. Only JPEG, PNG, and WebP images are allowed.');
+      toast.error('Invalid file type. Only JPEG, PNG, and WebP images are allowed.');
       return;
     }
 
     // Validate file size (max 5MB)
     const maxSize = 5 * 1024 * 1024; // 5MB
     if (file.size > maxSize) {
-      alert('File size too large. Maximum size is 5MB.');
+      toast.error('File size too large. Maximum size is 5MB.');
       return;
     }
 
@@ -61,11 +62,11 @@ export function FileUpload({
         onFileSelect(file);
       } else {
         const error = await response.json();
-        alert(error.error || 'Upload failed');
+        toast.error(error.error || 'Upload failed');
       }
     } catch (error) {
       console.error('Upload error:', error);
-      alert('Upload failed. Please try again.');
+      toast.error('Upload failed. Please try again.');
     } finally {
       setIsUploading(false);
     }

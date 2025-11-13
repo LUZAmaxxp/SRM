@@ -10,7 +10,8 @@
     "success": "Éxito",
     "confirm": "Confirmar",
     "yes": "Sí",
-    "no": "No"
+    "no": "No",
+    "view": "Ver"
   },
   "navigation": {
     "dashboard": "Panel de control",
@@ -108,7 +109,9 @@
       "exportData": "Exportar datos",
       "deleteAccount": "Eliminar cuenta",
       "exporting": "Exportando...",
-      "deleting": "Eliminando..."
+      "deleting": "Eliminando...",
+      "confirmDelete": "Confirmar eliminación de cuenta",
+      "confirmDeleteDesc": "¿Está seguro de que desea eliminar su cuenta? Esta acción no se puede deshacer."
     },
     "messages": {
       "settingEnabled": "{{setting}} habilitado",
@@ -226,7 +229,8 @@
     "description-placeholder": "Describa el problema en detalle",
     "recipient-emails": "Correos Electrónicos de Destinatarios",
     "remove": "Eliminar",
-    "add-recipient-email": "Agregar Correo Electrónico de Destinatario"
+    "add-recipient-email": "Agregar Correo Electrónico de Destinatario",
+    "form-confim-password-placeholder": "Confirme la contraseña"
   },
   "sign-up": {
     "success": "¡Cuenta creada exitosamente! Por favor, revise su correo electrónico para verificar su cuenta.",
@@ -283,6 +287,9 @@
     "total-interventions": "Total de Intervenciones",
     "total-reclamations": "Total de Reclamaciones",
     "active-users-month": "Usuarios Activos (Este Mes)",
+    "users": "Usuarios",
+    "all-interventions": "Todas las Intervenciones",
+    "all-reclamations": "Todas las Reclamaciones",
     "users-overview": "Resumen de Usuarios",
     "no-users-found": "No se encontraron usuarios",
     "no-user-data": "No hay datos de usuario disponibles",
@@ -326,7 +333,15 @@
     "type": "Tipo",
     "date": "Fecha",
     "description": "Descripción",
-    "and-more": "... y {{count}} más"
+    "and-more": "... y {{count}} más",
+    "delete" : "Eliminar",
+    "no-records-found": "No se encontraron registros",
+    "confirm-delete": "¿Estás seguro de que deseas eliminar este registro?",
+    "delete-success": "Registro eliminado exitosamente",
+    "delete-failed": "Ocurrieron errores al eliminar el registro",
+    "delete-error": "Error al eliminar el registro",
+    "confirm-delete-message": "¿Estás seguro de que deseas eliminar este registro?",
+    "cancel": "Cancelar"
   },
   "records": {
     "all-records": "Todos los Registros",
@@ -354,43 +369,10 @@
     "created-at": "Creado el"
   },
   "table": {
-    "type": "Tipo",
-    "company-station": "Empresa/Estación",
-    "responsible-person": "Persona Responsable",
-    "date-range": "Rango de Fechas",
-    "site-type": "Sitio/Tipo",
-    "team-members": "Miembros del Equipo",
-    "description": "Descripción",
-    "photo": "Foto",
-    "recipients": "Destinatarios",
-    "created-at": "Creado el"
-  },
-  "records": {
-    "all-records": "Todos los Registros",
-    "manage-desc": "Gestionar y ver todos los registros de intervención y reclamación",
-    "export-excel": "Exportar a Excel",
-    "records-overview": "Resumen de Registros",
-    "no-records-found": "No se encontraron registros",
-    "create-first": "Crea tu primera intervención o reclamación para comenzar.",
-    "intervention-details": "Detalles de la Intervención",
-    "reclamation-details": "Detalles de la Reclamación",
-    "company-name": "Nombre de la Empresa",
-    "responsible-person": "Persona Responsable",
-    "site-name": "Nombre del Sitio",
-    "start-date": "Fecha de Inicio",
-    "end-date": "Fecha de Fin",
-    "team-members": "Miembros del Equipo",
-    "photo": "Foto",
-    "intervention-photo": "Foto de la Intervención",
-    "station-name": "Nombre de la Estación",
-    "reclamation-type": "Tipo de Reclamación",
+    "id": "ID",
+    "user": "Usuario",
     "date": "Fecha",
-    "description": "Descripción",
-    "reclamation-photo": "Foto de la Reclamación",
-    "recipient-emails": "Correos Electrónicos de Destinatarios",
-    "created-at": "Creado el"
-  },
-  "table": {
+    "actions": "Acciones",
     "type": "Tipo",
     "company-station": "Empresa/Estación",
     "responsible-person": "Persona Responsable",
@@ -402,4 +384,5 @@
     "recipients": "Destinatarios",
     "created-at": "Creado el"
   }
+ 
 }

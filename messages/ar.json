@@ -108,7 +108,9 @@
       "exportData": "تصدير البيانات",
       "deleteAccount": "حذف الحساب",
       "exporting": "جارٍ التصدير...",
-      "deleting": "جارٍ الحذف..."
+      "deleting": "جارٍ الحذف...",
+      "confirmDelete": "تأكيد حذف الحساب",
+      "confirmDeleteDesc": "هل أنت متأكد من أنك تريد حذف حسابك؟ هذا الإجراء لا يمكن التراجع عنه."
     },
     "messages": {
       "settingEnabled": "{{setting}} مفعل",
@@ -226,7 +228,8 @@
     "description-placeholder": "وصف المشكلة بالتفصيل",
     "recipient-emails": "رسائل البريد الإلكتروني للمستلمين",
     "remove": "إزالة",
-    "add-recipient-email": "إضافة بريد إلكتروني للمستلم"
+    "add-recipient-email": "إضافة بريد إلكتروني للمستلم",
+    "form-confirm-password-placeholder": "تاكيد كلمة المرور"
   },
   "sign-up": {
     "success": "تم إنشاء الحساب بنجاح! يرجى التحقق من بريدك الإلكتروني لتأكيد حسابك.",
@@ -323,7 +326,16 @@
     "type": "النوع",
     "date": "التاريخ",
     "description": "الوصف",
-    "and-more": "... و {{count}} أكثر"
+    "and-more": "... و {{count}} أكثر",
+    "delete" : "حذف",
+    "no-records-found": "لم يتم العثور على سجلات", 
+    "confirm-delete": "هل انت متاكد من حذف هذا السجل؟",
+    "delete-success": "تم حذف السجل بنجاح",
+    "delete-failed": "حدث خطاء في حذف السجل",
+    "delete-error": "فشل في حذف السجل",
+    "confirm-delete-message": "هل انت متاكد من حذف هذا السجل؟",
+    "cancel": "الغاء"
+
   },
   "records": {
     "all-records": "جميع السجلات",

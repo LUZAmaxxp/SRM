@@ -1,4 +1,4 @@
-import { Document, Packer, Paragraph, TextRun, Table, TableCell, TableRow, WidthType, AlignmentType, ImageRun, BorderStyle } from 'docx';
+import { Document, Packer, Paragraph, TextRun, Table, TableCell, TableRow, WidthType, AlignmentType, ImageRun, BorderStyle, ShadingType } from 'docx';
 import fetch from 'node-fetch';
 import fs from 'fs';
 import path from 'path';
@@ -20,11 +20,14 @@ export interface BaseReportData {
 
 export interface InterventionData extends BaseReportData {
   interventionType: string;
+  interventionTeam?: string;
+  interventionNumber?: string;
 }
 
 export interface ReclamationData extends BaseReportData {
   reclamationType: string;
   date?: Date;
+  interventionNumber?: string;
 }
 
 // Professional color scheme
@@ -32,12 +35,15 @@ const COLORS = {
   PRIMARY: '2C5FAA',
   SECONDARY: '374151',
   ACCENT: '1E40AF',
-  LIGHT_GRAY: 'F8FAFC',
-  BORDER: 'E5E7EB'
+  LIGHT_BLUE: 'F0F7FF',
+  LIGHT_GRAY: 'F8F9FA',
+  BORDER: 'D1D5DB',
+  WHITE: 'FFFFFF',
+  DARK_BLUE: '1E3A8A'
 };
 
-// Common function to create report details table with professional styling
-function createDetailsTable(data: BaseReportData & { type: string; typeValue: string }) {
+// Helper function to create elegant frame with label
+function createElegantFrame(title: string, content: Paragraph[]): Table {
   return new Table({
     width: {
       size: 100,
@@ -48,97 +54,157 @@ function createDetailsTable(data: BaseReportData & { type: string; typeValue: st
       bottom: { style: BorderStyle.SINGLE, size: 1, color: COLORS.BORDER },
       left: { style: BorderStyle.SINGLE, size: 1, color: COLORS.BORDER },
       right: { style: BorderStyle.SINGLE, size: 1, color: COLORS.BORDER },
-      insideHorizontal: { style: BorderStyle.SINGLE, size: 1, color: COLORS.BORDER },
-      insideVertical: { style: BorderStyle.SINGLE, size: 1, color: COLORS.BORDER },
+    },
+    margins: {
+      top: 150,
+      bottom: 150,
+      left: 150,
+      right: 150,
     },
     rows: [
-      createTableRow("Référence:", data._id || "N/A", true),
-      createTableRow("Nom de l'Employé:", data.employeeName),
-      createTableRow("Matricule:", data.employeeId),
-      createTableRow("Site:", data.siteName),
-      createTableRow("Station:", data.stationName),
-      createTableRow(`${data.type}:`, data.typeValue),
-      createTableRow("Priorité:", getPriorityText(data.priority)),
-      createTableRow("Statut:", getStatusText(data.status)),
-      createTableRow("Date de Création:", data.createdAt ? 
-        new Date(data.createdAt).toLocaleDateString('fr-FR', {
-          year: 'numeric',
-          month: 'long',
-          day: 'numeric'
-        }) : 
-        new Date().toLocaleDateString('fr-FR', {
-          year: 'numeric',
-          month: 'long',
-          day: 'numeric'
-        })),
+      // Title row with elegant background
+      new TableRow({
+        children: [
+          new TableCell({
+            shading: {
+              fill: COLORS.PRIMARY,
+              type: ShadingType.CLEAR,
+            },
+            children: [
+              new Paragraph({
+                children: [
+                  new TextRun({
+                    text: title,
+                    bold: true,
+                    size: 18,
+                    color: COLORS.WHITE,
+                    font: 'Arial',
+                  }),
+                ],
+                alignment: AlignmentType.CENTER,
+                spacing: { before: 120, after: 120 },
+              }),
+            ],
+          }),
+        ],
+      }),
+      // Content row
+      new TableRow({
+        children: [
+          new TableCell({
+            shading: {
+              fill: COLORS.LIGHT_BLUE,
+              type: ShadingType.CLEAR,
+            },
+            children: [
+              ...content,
+            ],
+            margins: {
+              top: 200,
+              bottom: 200,
+              left: 200,
+              right: 200,
+            },
+          }),
+        ],
+      }),
     ],
   });
 }
 
-// Helper function to get priority text in French
-function getPriorityText(priority: string): string {
-  const priorityMap: { [key: string]: string } = {
-    'Low': 'Basse',
-    'Medium': 'Moyenne',
-    'High': 'Élevée',
-    'Critical': 'Critique'
-  };
-  return priorityMap[priority] || priority;
+// Helper function to create info item with better spacing
+function createInfoItem(label: string, value: string): Paragraph {
+  return new Paragraph({
+    children: [
+      new TextRun({
+        text: `${label}: `,
+        bold: true,
+        size: 16,
+        color: COLORS.DARK_BLUE,
+        font: 'Arial',
+      }),
+      new TextRun({
+        text: value,
+        size: 16,
+        color: COLORS.SECONDARY,
+        font: 'Arial',
+      }),
+    ],
+    spacing: { after: 120 },
+  });
 }
+
+// Common function to create report frames
+function createReportFrames(data: BaseReportData & { 
+  type: string; 
+  typeValue: string;
+  interventionTeam?: string;
+  interventionNumber?: string;
+}) {
+  const frames: Table[] = [];
+
+  // Frame 1: Information Générale
+  const infoGeneraleContent: Paragraph[] = [
+    createInfoItem("Nombre d'intervention", data.interventionNumber || "N/A"),
+    createInfoItem("Station", data.stationName),
+    createInfoItem("Site", data.siteName),
+    createInfoItem("Type", data.typeValue),
+  ];
+
+  frames.push(createElegantFrame("INFORMATION GÉNÉRALE", infoGeneraleContent));
+
+  // Frame 2: Date et Heure
+  const now = new Date();
+  const dateTimeContent: Paragraph[] = [
+    createInfoItem("Date", now.toLocaleDateString('fr-FR', {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric'
+    })),
+    createInfoItem("Heure", now.toLocaleTimeString('fr-FR', {
+      hour: '2-digit',
+      minute: '2-digit'
+    })),
+    createInfoItem("Soumis par", data.employeeName),
+    createInfoItem("Matricule", data.employeeId),
+  ];
+
+  frames.push(createElegantFrame("DATE ET HEURE", dateTimeContent));
+
+  // Frame 3: Description
+  const descriptionContent: Paragraph[] = [
+    new Paragraph({
+      children: [
+        new TextRun({
+          text: data.description || "Aucune description fournie",
+          size: 16,
+          color: COLORS.SECONDARY,
+          font: 'Arial',
+        }),
+      ],
+      spacing: { after: 150 },
+      alignment: AlignmentType.JUSTIFIED,
+    }),
+  ];
+
+  frames.push(createElegantFrame("DESCRIPTION", descriptionContent));
+
+  return frames;
+}
+
+
+
 
 // Helper function to get status text in French
-function getStatusText(status: string): string {
-  const statusMap: { [key: string]: string } = {
-    'Pending': 'En Attente',
-    'In Progress': 'En Cours',
-    'Completed': 'Terminé',
-    'Cancelled': 'Annulé'
-  };
-  return statusMap[status] || status;
-}
 
-// Helper function to create table rows with professional styling
-function createTableRow(label: string, value: string, isHeader = false): TableRow {
-  return new TableRow({
-    children: [
-      new TableCell({
-        width: { size: 35, type: WidthType.PERCENTAGE },
-        shading: {
-          fill: isHeader ? COLORS.PRIMARY : COLORS.LIGHT_GRAY,
-        },
-        children: [new Paragraph({
-          children: [new TextRun({ 
-            text: label, 
-            bold: true, 
-            color: isHeader ? 'FFFFFF' : COLORS.SECONDARY,
-            size: 22,
-          })],
-          alignment: AlignmentType.LEFT,
-        })],
-      }),
-      new TableCell({
-        width: { size: 65, type: WidthType.PERCENTAGE },
-        children: [new Paragraph({
-          children: [new TextRun({ 
-            text: value, 
-            color: COLORS.SECONDARY,
-            size: 22,
-          })],
-          alignment: AlignmentType.LEFT,
-        })],
-      }),
-    ],
-  });
-}
-
-// Helper function to create section headers with professional styling
+// Helper function to create section headers
 function createSectionHeader(text: string, spacingBefore = 400, spacingAfter = 200): Paragraph {
   return new Paragraph({
     children: [
       new TextRun({
         text,
         bold: true,
-        size: 24,
+        size: 20,
         color: COLORS.PRIMARY,
         font: 'Arial',
       }),
@@ -147,7 +213,7 @@ function createSectionHeader(text: string, spacingBefore = 400, spacingAfter = 2
     border: {
       bottom: {
         style: BorderStyle.SINGLE,
-        size: 2,
+        size: 1,
         color: COLORS.PRIMARY,
         space: 1,
       },
@@ -155,114 +221,212 @@ function createSectionHeader(text: string, spacingBefore = 400, spacingAfter = 2
   });
 }
 
-// Helper function to create content paragraphs with professional styling
-function createContentParagraph(text: string, spacingAfter = 400): Paragraph[] {
-  const lines = text.split('\n');
-  const paragraphs: Paragraph[] = [];
-
-  for (let i = 0; i < lines.length; i++) {
-    const line = lines[i].trim();
-    if (!line) continue;
-
-    const textRuns: TextRun[] = [];
-    const parts = line.split(/(\*\*.*?\*\*)/g);
-
-    for (const part of parts) {
-      if (part.startsWith('**') && part.endsWith('**')) {
-        // Bold text
-        const boldText = part.slice(2, -2);
-        textRuns.push(new TextRun({
-          text: boldText,
-          bold: true,
-          size: 22,
-          color: COLORS.PRIMARY,
-          font: 'Arial',
-        }));
-      } else if (part.trim()) {
-        // Regular text
-        textRuns.push(new TextRun({
-          text: part,
-          size: 22,
-          color: COLORS.SECONDARY,
-          font: 'Arial',
-        }));
-      }
-    }
-
-    paragraphs.push(new Paragraph({
-      children: textRuns,
-      spacing: { after: i === lines.length - 1 ? spacingAfter : 200 },
-      alignment: AlignmentType.LEFT,
-    }));
+// Helper function to create header table with logo and title
+function createHeaderTable(): Table {
+  const logoPath = path.join(process.cwd(), 'public', 'LOGO-SOUSS-MASSA-1033x308px-removebg-preview.png');
+  
+  let logoImage = null;
+  if (fs.existsSync(logoPath)) {
+    const logoBuffer = fs.readFileSync(logoPath);
+    logoImage = new ImageRun({
+      data: logoBuffer,
+      transformation: {
+        width: 120,
+        height: 36,
+      },
+      type: "png",
+    });
   }
 
-  return paragraphs;
-}
-
-// Helper function to create report title with professional styling
-function createReportTitle(title: string | string[]): Paragraph[] {
-  if (typeof title === 'string') {
-    return [
-      new Paragraph({
+  return new Table({
+    width: {
+      size: 100,
+      type: WidthType.PERCENTAGE,
+    },
+    columnWidths: [30, 70],
+    rows: [
+      new TableRow({
         children: [
-          new TextRun({
-            text: title.toUpperCase(),
-            bold: true,
-            size: 32,
-            color: COLORS.PRIMARY,
-            font: 'Arial',
+          // Logo cell
+          new TableCell({
+            children: logoImage ? [
+              new Paragraph({
+                children: [logoImage],
+                alignment: AlignmentType.LEFT,
+              })
+            ] : [new Paragraph('')],
+            verticalAlign: AlignmentType.CENTER,
+          }),
+          // Title cell
+          new TableCell({
+            children: [
+              new Paragraph({
+                children: [
+                  new TextRun({
+                    text: "RAPPORT DES TRAVAUX",
+                    bold: true,
+                    size: 18,
+                    color: COLORS.PRIMARY,
+                    font: 'Arial',
+                  }),
+                ],
+                alignment: AlignmentType.CENTER,
+                spacing: { after: 80 },
+              }),
+              new Paragraph({
+                children: [
+                  new TextRun({
+                    text: "D'EXPLOITATION ET DE LA MAINTENANCE",
+                    bold: true,
+                    size: 16,
+                    color: COLORS.PRIMARY,
+                    font: 'Arial',
+                  }),
+                ],
+                alignment: AlignmentType.CENTER,
+                spacing: { after: 80 },
+              }),
+              new Paragraph({
+                children: [
+                  new TextRun({
+                    text: "DES STATIONS ET KITS DE RELEVAGE",
+                    bold: true,
+                    size: 16,
+                    color: COLORS.PRIMARY,
+                    font: 'Arial',
+                  }),
+                ],
+                alignment: AlignmentType.CENTER,
+              }),
+            ],
+            verticalAlign: AlignmentType.CENTER,
           }),
         ],
-        alignment: AlignmentType.CENTER,
-        spacing: { after: 800, before: 200 },
-        border: {
-          bottom: {
-            style: BorderStyle.DOUBLE,
-            size: 4,
-            color: COLORS.ACCENT,
-            space: 2,
-          },
-        },
       }),
-    ];
-  } else {
-    return title.map((line, index) => new Paragraph({
-      children: [
-        new TextRun({
-          text: line.toUpperCase(),
-          bold: true,
-          size: 32,
-          color: COLORS.PRIMARY,
-          font: 'Arial',
-        }),
-      ],
-      alignment: AlignmentType.CENTER,
-      spacing: { after: index === title.length - 1 ? 800 : 200, before: index === 0 ? 200 : 0 },
-      border: index === title.length - 1 ? {
-        bottom: {
-          style: BorderStyle.DOUBLE,
-          size: 4,
-          color: COLORS.ACCENT,
-          space: 2,
-        },
-      } : undefined,
-    }));
-  }
+    ],
+  });
 }
 
-// Helper function to create photo section with professional styling
+// Helper function to create elegant signature section
+function createSignatureSection(): Table {
+  return new Table({
+    width: {
+      size: 100,
+      type: WidthType.PERCENTAGE,
+    },
+    columnWidths: [50, 50],
+    margins: {
+      top: 400,
+      bottom: 200,
+      left: 400,
+      right: 400,
+    },
+    rows: [
+      new TableRow({
+        children: [
+          // Left signature - Visa responsable d'intervention
+          new TableCell({
+            children: [
+              new Paragraph({
+                children: [
+                  new TextRun({
+                    text: "Visa responsable d'intervention",
+                    bold: true,
+                    size: 14,
+                    color: COLORS.SECONDARY,
+                    font: 'Arial',
+                  }),
+                ],
+                alignment: AlignmentType.CENTER,
+                spacing: { before: 300, after: 150 },
+              }),
+              new Paragraph({
+                children: [
+                  new TextRun({
+                    text: "_________________________",
+                    size: 14,
+                    color: COLORS.SECONDARY,
+                    font: 'Arial',
+                  }),
+                ],
+                alignment: AlignmentType.CENTER,
+                spacing: { after: 80 },
+              }),
+              new Paragraph({
+                children: [
+                  new TextRun({
+                    text: "Nom et signature",
+                    size: 12,
+                    color: COLORS.SECONDARY,
+                    font: 'Arial',
+                    italics: true,
+                  }),
+                ],
+                alignment: AlignmentType.CENTER,
+              }),
+            ],
+          }),
+          // Right signature - Visa chef de division
+          new TableCell({
+            children: [
+              new Paragraph({
+                children: [
+                  new TextRun({
+                    text: "Visa chef de division",
+                    bold: true,
+                    size: 14,
+                    color: COLORS.SECONDARY,
+                    font: 'Arial',
+                  }),
+                ],
+                alignment: AlignmentType.CENTER,
+                spacing: { before: 300, after: 150 },
+              }),
+              new Paragraph({
+                children: [
+                  new TextRun({
+                    text: "_________________________",
+                    size: 14,
+                    color: COLORS.SECONDARY,
+                    font: 'Arial',
+                  }),
+                ],
+                alignment: AlignmentType.CENTER,
+                spacing: { after: 80 },
+              }),
+              new Paragraph({
+                children: [
+                  new TextRun({
+                    text: "Nom et signature",
+                    size: 12,
+                    color: COLORS.SECONDARY,
+                    font: 'Arial',
+                    italics: true,
+                  }),
+                ],
+                alignment: AlignmentType.CENTER,
+              }),
+            ],
+          }),
+        ],
+      }),
+    ],
+  });
+}
+
+// Helper function to create photo section
 function createPhotoSection(photoBuffer: Buffer | null): Paragraph[] {
   if (!photoBuffer) return [];
 
   return [
-    createSectionHeader("Documentation Photographique"),
+    createSectionHeader("DOCUMENTATION PHOTOGRAPHIQUE"),
     new Paragraph({
       children: [
         new ImageRun({
           data: photoBuffer,
           transformation: {
-            width: 500,
-            height: 375,
+            width: 350,
+            height: 250,
           },
           type: "png",
         }),
@@ -273,60 +437,14 @@ function createPhotoSection(photoBuffer: Buffer | null): Paragraph[] {
   ];
 }
 
-// Helper function to create logo paragraph with professional styling
-function createLogoParagraph(): Paragraph {
-  const logoPath = path.join(process.cwd(), 'public', 'LOGO-SOUSS-MASSA-1033x308px-removebg-preview.png');
-  
-  if (!fs.existsSync(logoPath)) {
-    // Return empty paragraph if logo doesn't exist
-    return new Paragraph({ children: [] });
-  }
-
-  const logoBuffer = fs.readFileSync(logoPath);
-
-  return new Paragraph({
-    children: [
-      new ImageRun({
-        data: logoBuffer,
-        transformation: {
-          width: 250,
-          height: 75,
-        },
-        type: "png",
-      }),
-    ],
-    alignment: AlignmentType.LEFT,
-    spacing: { after: 300 },
-  });
-}
-
-// Helper function to create footer with company information
-function createFooter(): Paragraph {
-  return new Paragraph({
-    children: [
-      new TextRun({
-        text: "Document généré électroniquement - ",
-        size: 18,
-        color: COLORS.SECONDARY,
-        italics: true,
-      }),
-      new TextRun({
-        text: "Région Souss-Massa",
-        size: 18,
-        color: COLORS.PRIMARY,
-        bold: true,
-        italics: true,
-      }),
-    ],
-    alignment: AlignmentType.CENTER,
-    spacing: { before: 600, after: 200 },
-  });
-}
-
-// Common function to generate report document with professional structure
+// Common function to generate report document with improved layout
 async function generateReportDoc(
-  data: BaseReportData & { type: string; typeValue: string },
-  reportTitle: string | string[],
+  data: BaseReportData & {
+    type: string;
+    typeValue: string;
+    interventionTeam?: string;
+    interventionNumber?: string;
+  },
 ): Promise<Buffer> {
   let photoBuffer: Buffer | null = null;
 
@@ -344,52 +462,60 @@ async function generateReportDoc(
         properties: {
           page: {
             margin: {
-              top: 800,
-              right: 800,
-              bottom: 800,
-              left: 800,
+              top: 600,
+              right: 600,
+              bottom: 600,
+              left: 600,
             },
           },
         },
         children: [
-          // Logo
-          createLogoParagraph(),
-          
-          // Title
-          ...createReportTitle(reportTitle),
+          // Header with logo and title in a table
+          createHeaderTable(),
 
-          // Introduction paragraph
+          // Spacing after header
           new Paragraph({
-            children: [
-              new TextRun({
-                text: "Rapport Officiel - ",
-                bold: true,
-                size: 20,
-                color: COLORS.SECONDARY,
-              }),
-              new TextRun({
-                text: "Ce document présente les détails techniques et administratifs de l'opération.",
-                size: 20,
-                color: COLORS.SECONDARY,
-              }),
-            ],
-            spacing: { after: 400 },
-            alignment: AlignmentType.JUSTIFIED,
+            children: [],
+            spacing: { after: 600 },
           }),
 
-          // Report Details Table
-          createSectionHeader("Informations Détaillées"),
-          createDetailsTable(data),
+          // Rounded Frames
+          ...createReportFrames(data),
 
           // Photo Section
           ...createPhotoSection(photoBuffer),
 
           // Report Recipients Section
-          createSectionHeader("Destinataires du Rapport"),
-          ...createContentParagraph(data.recipientEmails.join("\n")),
+          createSectionHeader("DESTINATAIRES DU RAPPORT"),
+          new Paragraph({
+            children: [
+              new TextRun({
+                text: data.recipientEmails.join(", "),
+                size: 16,
+                color: COLORS.SECONDARY,
+                font: 'Arial',
+              }),
+            ],
+            alignment: AlignmentType.CENTER,
+            spacing: { after: 400 },
+          }),
+
+          // Signature Section
+          createSignatureSection(),
 
           // Footer
-          createFooter(),
+          new Paragraph({
+            children: [
+              new TextRun({
+                text: "Document généré électroniquement - Région Souss-Massa",
+                size: 12,
+                color: COLORS.SECONDARY,
+                italics: true,
+              }),
+            ],
+            alignment: AlignmentType.CENTER,
+            spacing: { before: 400, after: 200 },
+          }),
         ],
       },
     ],
@@ -399,50 +525,51 @@ async function generateReportDoc(
 }
 
 export async function generateInterventionDoc(data: InterventionData): Promise<Buffer> {
-  // Parse the description to extract team, dates, and company
+  // Parse the description to extract team information
   const description = data.description || '';
-
-  // Extract team (look for "Team:" pattern)
+  
+  // Extract team information
   const teamMatch = description.match(/Team:\s*([^.]+)/i);
-  const team = teamMatch ? teamMatch[1].trim() : 'Non spécifié';
+  const team = teamMatch ? teamMatch[1].trim() : (data.interventionTeam || 'Non spécifiée');
 
-  // Extract dates (look for "Dates:" pattern)
+  // Extract dates
   const datesMatch = description.match(/Dates:\s*([^.]+)/i);
-  const dates = datesMatch ? datesMatch[1].trim() : 'Non spécifié';
+  const dates = datesMatch ? datesMatch[1].trim() : 'Non spécifiée';
 
-  // Extract company (look for "Company:" pattern)
+  // Extract company
   const companyMatch = description.match(/Company:\s*([^.]+)/i);
-  const company = companyMatch ? companyMatch[1].trim() : 'Non spécifié';
+  const company = companyMatch ? companyMatch[1].trim() : 'Non spécifiée';
 
-  // Create formatted description with professional labels
-  const descriptionWithLabels = `**Équipe d'Intervention:** ${team}\n**Période d'Intervention:** ${dates}\n**Entreprise Prestataire:** ${company}`;
+  // Create formatted description
+  const descriptionWithLabels = `Intervention réalisée par l'équipe: ${team}\nPériode: ${dates}\nEntreprise: ${company}\n\nDétails: ${data.description || 'Aucun détail supplémentaire'}`;
 
   return generateReportDoc(
     {
       ...data,
-      type: "Type d'Intervention",
+      type: "Intervention",
       typeValue: data.interventionType,
+      interventionTeam: team,
+      interventionNumber: data.interventionNumber || `INT-${data._id?.toString().substring(0, 8) || '00000000'}`,
       description: descriptionWithLabels
-    },
-    ["RAPPORT D'INTERVENTION", "TECHNIQUE"]
+    }
   );
 }
 
 export async function generateReclamationDoc(data: ReclamationData): Promise<Buffer> {
-  // Create formatted description with professional labels
-  const descriptionWithLabels = `**Nature de la Réclamation:** ${data.reclamationType}\n**Date de l'Incident:** ${data.date ? new Date(data.date).toLocaleDateString('fr-FR', {
+  // Create formatted description
+  const descriptionWithLabels = `Type de réclamation: ${data.reclamationType}\nStation concernée: ${data.stationName}\nDate de l'incident: ${data.date ? new Date(data.date).toLocaleDateString('fr-FR', {
     year: 'numeric',
     month: 'long',
     day: 'numeric'
-  }) : 'Non spécifiée'}\n**Station Concernée:** ${data.stationName}\n\n**Description Détaillée:** ${data.description || 'Aucune description fournie'}`;
+  }) : 'Non spécifiée'}\n\nDescription: ${data.description || 'Aucune description fournie'}`;
 
   return generateReportDoc(
     {
       ...data,
-      type: "Catégorie",
+      type: "Réclamation",
       typeValue: data.reclamationType,
+      interventionNumber: data.interventionNumber || `REC-${data._id?.toString().substring(0, 8) || '00000000'}`,
       description: descriptionWithLabels
-    },
-    ["RAPPORT DE RÉCLAMATION", "ET SUIVI"]
+    }
   );
 }

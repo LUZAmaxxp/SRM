@@ -6,6 +6,67 @@ import { generateReclamationDoc } from '@/lib/docx-generator';
 import { emailService } from '@/lib/email-service';
 import { checkRateLimit } from '@/lib/rate-limiter';
 
+export async function GET(request: NextRequest) {
+  const { searchParams } = new URL(request.url);
+  const isAdmin = searchParams.get('admin') === 'true';
+
+  try {
+    // Check authentication
+    const session = await auth.api.getSession({
+      headers: request.headers
+    });
+
+    if (!session) {
+      return NextResponse.json(
+        { error: 'Unauthorized' },
+        { status: 401 }
+      );
+    }
+
+    // Check admin access if admin request
+    if (isAdmin) {
+      const { isAdminEmail } = await import('@/lib/admin-config');
+      const isAdminUser = await isAdminEmail(session.user.email);
+      if (!isAdminUser) {
+        return NextResponse.json(
+          { error: 'Access denied. Admin privileges required.' },
+          { status: 403 }
+        );
+      }
+    }
+
+    // Connect to database
+    await dbConnect();
+
+    let reclamations;
+    if (isAdmin) {
+      // Fetch all reclamations for admin (userName is already stored in the document)
+      reclamations = await Reclamation.find({})
+        .sort({ createdAt: -1 })
+        .lean();
+    } else {
+      // Fetch reclamations for current user
+      reclamations = await Reclamation.find({ userId: session.user.id })
+        .sort({ createdAt: -1 })
+        .lean();
+    }
+
+    return NextResponse.json({
+      success: true,
+      data: reclamations
+    });
+
+  } catch (error) {
+    console.error('Error fetching reclamations:', error);
+    return NextResponse.json(
+      { error: 'Internal server error' },
+      { status: 500 }
+    );
+  }
+}
+
+
+
 export async function POST(request: NextRequest) {
   try {
     // Check authentication
@@ -72,6 +133,7 @@ export async function POST(request: NextRequest) {
     // Create new reclamation (use correct schema fields)
     const reclamation = new Reclamation({
       userId: session.user.id,
+      userName: session.user.name || 'N/A',
       date: new Date(date),
       stationName,
       reclamationType,

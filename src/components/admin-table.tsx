@@ -349,17 +349,17 @@ export default function AdminTable({ users }: AdminTableProps) {
                       {selectedUser.interventions.slice(0, 5).map((intervention, index) => (
                         <div key={index} className="border rounded p-3 bg-blue-50">
                           <div className="grid grid-cols-2 gap-2 text-sm">
-                            <div><strong>Company:</strong> {String(intervention.entrepriseName || 'N/A')}</div>
-                            <div><strong>Site:</strong> {String(intervention.siteName || 'N/A')}</div>
-                            <div><strong>Responsible:</strong> {String(intervention.responsable || 'N/A')}</div>
-                            <div><strong>Start:</strong> {formatDate(String(intervention.startDate || ''))}</div>
-                            <div><strong>Team:</strong> {Array.isArray(intervention.teamMembers) ? intervention.teamMembers.join(', ') : 'N/A'}</div>
-                            <div><strong>Created:</strong> {formatDate(String(intervention.createdAt || ''))}</div>
+                            <div><strong>{t('admin.company')}:</strong> {String(intervention.entrepriseName || 'N/A')}</div>
+                            <div><strong>{t('admin.site')}:</strong> {String(intervention.siteName || 'N/A')}</div>
+                            <div><strong>{t('admin.responsible')}:</strong> {String(intervention.responsable || 'N/A')}</div>
+                            <div><strong>{t('admin.start')}:</strong> {formatDate(String(intervention.startDate || ''))}</div>
+                            <div><strong>{t('admin.team')}:</strong> {Array.isArray(intervention.teamMembers) ? intervention.teamMembers.join(', ') : 'N/A'}</div>
+                            <div><strong>{t('admin.created')}:</strong> {formatDate(String(intervention.createdAt || ''))}</div>
                           </div>
                         </div>
                       ))}
                       {selectedUser.interventions.length > 5 && (
-                        <p className="text-sm text-gray-600">... and {selectedUser.interventions.length - 5} more</p>
+                        <p className="text-sm text-gray-600">{t('admin.and-more', { count: String(selectedUser.interventions.length - 5) })}</p>
                       )}
                     </div>
                   </div>
@@ -376,16 +376,16 @@ export default function AdminTable({ users }: AdminTableProps) {
                       {selectedUser.reclamations.slice(0, 5).map((reclamation, index) => (
                         <div key={index} className="border rounded p-3 bg-red-50">
                           <div className="grid grid-cols-2 gap-2 text-sm">
-                            <div><strong>Station:</strong> {String(reclamation.stationName || 'N/A')}</div>
-                            <div><strong>Type:</strong> <Badge className={`text-xs ${getReclamationTypeColor(String(reclamation.reclamationType || ''))}`}>{String(reclamation.reclamationType || 'N/A')}</Badge></div>
-                            <div><strong>Date:</strong> {formatDate(String(reclamation.date || ''))}</div>
-                            <div><strong>Description:</strong> {String(reclamation.description || '').substring(0, 50)}...</div>
-                            <div><strong>Created:</strong> {formatDate(String(reclamation.createdAt || ''))}</div>
+                            <div><strong>{t('admin.station')}:</strong> {String(reclamation.stationName || 'N/A')}</div>
+                            <div><strong>{t('admin.type')}:</strong> <Badge className={`text-xs ${getReclamationTypeColor(String(reclamation.reclamationType || ''))}`}>{String(reclamation.reclamationType || 'N/A')}</Badge></div>
+                            <div><strong>{t('admin.date')}:</strong> {formatDate(String(reclamation.date || ''))}</div>
+                            <div><strong>{t('admin.description')}:</strong> {String(reclamation.description || '').substring(0, 50)}...</div>
+                            <div><strong>{t('admin.created')}:</strong> {formatDate(String(reclamation.createdAt || ''))}</div>
                           </div>
                         </div>
                       ))}
                       {selectedUser.reclamations.length > 5 && (
-                        <p className="text-sm text-gray-600">... and {selectedUser.reclamations.length - 5} more</p>
+                        <p className="text-sm text-gray-600">{t('admin.and-more', { count: String(selectedUser.reclamations.length - 5) })}</p>
                       )}
                     </div>
                   </div>

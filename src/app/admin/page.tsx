@@ -3,13 +3,113 @@
 import { useEffect, useState, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent } from '@/components/ui/card';
-import { Shield, AlertCircle } from 'lucide-react';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { Shield, AlertCircle, Trash2 } from 'lucide-react';
 import toast, { Toaster } from 'react-hot-toast';
 import AdminTable from '@/components/admin-table';
 import SidebarMenu from '@/components/sidebar-menu';
 import { authClient } from '@/lib/auth-client';
 import { useTranslation } from '@/lib/i18n-context';
+
+// Admin Records Table Component
+function AdminRecordsTable({
+  records,
+  type,
+  onDelete
+}: {
+  records: Record<string, unknown>[];
+  type: 'interventions' | 'reclamations';
+  onDelete: (id: string, type: 'interventions' | 'reclamations') => void;
+}) {
+  const { t } = useTranslation();
+
+  const formatDate = (dateString: string) => {
+    try {
+      const date = new Date(dateString);
+      // Check if date is valid
+      if (isNaN(date.getTime())) {
+        return 'Invalid Date';
+      }
+      return date.toLocaleDateString('en-US', {
+        year: 'numeric',
+        month: 'short',
+        day: 'numeric',
+      });
+    } catch {
+      return 'Invalid Date';
+    }
+  };
+
+  return (
+    <Card>
+      <CardHeader>
+        <CardTitle>
+          {type === 'interventions' ? t('admin.all-interventions') : t('admin.all-reclamations')}
+          ({records.length})
+        </CardTitle>
+      </CardHeader>
+      <CardContent>
+        {records.length === 0 ? (
+          <div className="text-center py-8">
+            <p className="text-gray-600">{t('admin.no-records-found')}</p>
+          </div>
+        ) : (
+          <div className="overflow-x-auto">
+            <table className="w-full">
+              <thead>
+                <tr className="border-b">
+                  <th className="text-left py-3 px-4 font-medium text-gray-900">{t('table.id')}</th>
+                  <th className="text-left py-3 px-4 font-medium text-gray-900">{t('table.user')}</th>
+                  <th className="text-left py-3 px-4 font-medium text-gray-900">{t('table.date')}</th>
+                  <th className="text-left py-3 px-4 font-medium text-gray-900">{t('table.description')}</th>
+                  <th className="text-left py-3 px-4 font-medium text-gray-900">{t('table.actions')}</th>
+                </tr>
+              </thead>
+              <tbody>
+                {records.map((record, index) => (
+                  <tr key={String(record._id)} className="border-b hover:bg-gray-50">
+                    <td className="py-4 px-4">
+                      <div className="text-sm font-medium">{index + 1}</div>
+                    </td>
+                    <td className="py-4 px-4">
+                      <div className="text-sm text-gray-600">
+                        {String(
+                          (record.userName && record.userName !== 'N/A')
+                            ? record.userName
+                            : ((record.userId as Record<string, unknown>)?.email || 'N/A')
+                        )}
+                      </div>
+                    </td>
+                    <td className="py-4 px-4">
+                      <div className="text-sm text-gray-600">
+                        {formatDate(String(record.createdAt))}
+                      </div>
+                    </td>
+                    <td className="py-4 px-4">
+                      <div className="text-sm text-gray-600 max-w-xs truncate">
+                        {String(record.description || record.entrepriseName || 'N/A')}
+                      </div>
+                    </td>
+                    <td className="py-4 px-4">
+                      <Button
+                        variant="destructive"
+                        size="sm"
+                        onClick={() => onDelete(String(record._id), type)}
+                      >
+                        {t('admin.delete')}
+                      </Button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )}
+      </CardContent>
+    </Card>
+  );
+}
 
 
 interface UserData {
@@ -33,6 +133,12 @@ export default function AdminPage() {
   const [authenticated, setAuthenticated] = useState(false);
   const [authorized, setAuthorized] = useState(false);
   const [activeSection, setActiveSection] = useState<'overview' | 'interventions' | 'reclamations' | 'records' | 'admin'>('admin');
+  const [allInterventions, setAllInterventions] = useState<Record<string, unknown>[]>([]);
+  const [allReclamations, setAllReclamations] = useState<Record<string, unknown>[]>([]);
+  const [currentView, setCurrentView] = useState<'users' | 'interventions' | 'reclamations'>('users');
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+  const [recordToDelete, setRecordToDelete] = useState<{ id: string; type: 'interventions' | 'reclamations' } | null>(null);
+  const [isDeleting, setIsDeleting] = useState(false);
   const router = useRouter();
 
   useEffect(() => {
@@ -84,7 +190,7 @@ export default function AdminPage() {
       const response = await fetch('/api/admin');
       if (response.ok) {
         const data = await response.json();
-        setUsers(data.data);
+        setUsers(data);
       } else if (response.status === 403) {
         toast.error('Access denied. Admin privileges required.');
         router.push('/dashboard');
@@ -98,6 +204,60 @@ export default function AdminPage() {
       setLoading(false);
     }
   }, [authenticated, authorized, router]);
+
+  const fetchAllRecords = useCallback(async () => {
+    if (!authenticated || !authorized) return;
+
+    try {
+      // Fetch all interventions
+      const interventionsResponse = await fetch('/api/interventions?admin=true');
+      if (interventionsResponse.ok) {
+        const interventionsData = await interventionsResponse.json();
+        setAllInterventions(interventionsData.data || []);
+      }
+
+      // Fetch all reclamations
+      const reclamationsResponse = await fetch('/api/reclamations?admin=true');
+      if (reclamationsResponse.ok) {
+        const reclamationsData = await reclamationsResponse.json();
+        setAllReclamations(reclamationsData.data || []);
+      }
+    } catch (error) {
+      console.error('Error fetching all records:', error);
+      toast.error('An error occurred while fetching records');
+    }
+  }, [authenticated, authorized]);
+
+  const handleDeleteRecord = useCallback((id: string, type: 'interventions' | 'reclamations') => {
+    setRecordToDelete({ id, type });
+    setDeleteDialogOpen(true);
+  }, []);
+
+  const confirmDeleteRecord = useCallback(async () => {
+    if (!recordToDelete) return;
+
+    setIsDeleting(true);
+    try {
+      const response = await fetch(`/api/${recordToDelete.type}/${recordToDelete.id}`, {
+        method: 'DELETE',
+      });
+
+      if (response.ok) {
+        toast.success(t('admin.delete-success'));
+        // Refresh the records
+        fetchAllRecords();
+      } else {
+        toast.error(t('admin.delete-error'));
+      }
+    } catch (error) {
+      console.error('Error deleting record:', error);
+      toast.error(t('admin.delete-error'));
+    } finally {
+      setIsDeleting(false);
+      setDeleteDialogOpen(false);
+      setRecordToDelete(null);
+    }
+  }, [recordToDelete, t, fetchAllRecords]);
 
   useEffect(() => {
     if (authenticated && authorized) {
@@ -160,9 +320,85 @@ export default function AdminPage() {
             <p className="text-gray-600">{t('admin.subtitle')}</p>
           </div>
 
-          <AdminTable users={users} />
+          {/* View Toggle */}
+          <div className="mb-6">
+            <div className="flex gap-2">
+              <Button
+                variant={currentView === 'users' ? 'default' : 'outline'}
+                onClick={() => setCurrentView('users')}
+              >
+                {t('admin.users')}
+              </Button>
+              <Button
+                variant={currentView === 'interventions' ? 'default' : 'outline'}
+                onClick={() => {
+                  setCurrentView('interventions');
+                  fetchAllRecords();
+                }}
+              >
+                {t('admin.all-interventions')}
+              </Button>
+              <Button
+                variant={currentView === 'reclamations' ? 'default' : 'outline'}
+                onClick={() => {
+                  setCurrentView('reclamations');
+                  fetchAllRecords();
+                }}
+              >
+                {t('admin.all-reclamations')}
+              </Button>
+            </div>
+          </div>
+
+          {currentView === 'users' && <AdminTable users={users} />}
+          {currentView === 'interventions' && (
+            <AdminRecordsTable
+              records={allInterventions}
+              type="interventions"
+              onDelete={handleDeleteRecord}
+            />
+          )}
+          {currentView === 'reclamations' && (
+            <AdminRecordsTable
+              records={allReclamations}
+              type="reclamations"
+              onDelete={handleDeleteRecord}
+            />
+          )}
         </div>
       </div>
+
+      {/* Delete Confirmation Dialog */}
+      <Dialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              <Trash2 className="w-5 h-5 text-red-500" />
+              {t('admin.confirm-delete')}
+            </DialogTitle>
+            <DialogDescription>
+              {t('admin.confirm-delete-message')}
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter>
+            <Button
+              variant="outline"
+              onClick={() => setDeleteDialogOpen(false)}
+              disabled={isDeleting}
+            >
+              {t('admin.cancel')}
+            </Button>
+            <Button
+              variant="destructive"
+              onClick={confirmDeleteRecord}
+              disabled={isDeleting}
+            >
+              {isDeleting ? t('admin.deleting') : t('admin.delete')}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
       <Toaster />
     </div>
   );

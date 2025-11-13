@@ -2,6 +2,7 @@
 
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Bell, Shield, Palette, Globe } from 'lucide-react';
 import SidebarMenu from '@/components/sidebar-menu';
 import { useSettingsStore } from '@/lib/settings-store';
@@ -13,6 +14,8 @@ import { authClient } from '@/lib/auth-client';
 
 export default function SettingsPage() {
   const [isLoading, setIsLoading] = useState(false);
+  const [isLogoutDialogOpen, setIsLogoutDialogOpen] = useState(false);
+  const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
   const { t } = useTranslation();
   const { setLocale } = useI18n();
   const router = useRouter();
@@ -108,25 +111,28 @@ export default function SettingsPage() {
 
 
   const handleLogoutAllSessions = async () => {
-    if (confirm(t('settings.security.confirmLogoutAll'))) {
-      setIsLoading(true);
-      try {
-        await authClient.signOut({
-          fetchOptions: {
-            onSuccess: () => {
-              toast.success(t('settings.security.logoutAllSuccess'));
-              router.push('/');
-            },
-            onError: () => {
-              toast.error(t('settings.security.logoutAllError'));
-            },
+    setIsLogoutDialogOpen(true);
+  };
+
+  const confirmLogoutAllSessions = async () => {
+    setIsLogoutDialogOpen(false);
+    setIsLoading(true);
+    try {
+      await authClient.signOut({
+        fetchOptions: {
+          onSuccess: () => {
+            toast.success(t('settings.security.logoutAllSuccess'));
+            router.push('/');
           },
-        });
-      } catch {
-        toast.error(t('settings.security.logoutAllError'));
-      } finally {
-        setIsLoading(false);
-      }
+          onError: () => {
+            toast.error(t('settings.security.logoutAllError'));
+          },
+        },
+      });
+    } catch {
+      toast.error(t('settings.security.logoutAllError'));
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -157,27 +163,30 @@ export default function SettingsPage() {
   };
 
   const handleDeleteAccount = async () => {
-    if (confirm(t('common.confirm'))) {
-      setIsLoading(true);
-      try {
-        const response = await fetch('/api/settings/delete-account', {
-          method: 'POST',
-        });
+    setIsDeleteDialogOpen(true);
+  };
 
-        if (response.ok) {
-          toast.success(t('settings.messages.deleteSuccess'));
-          // Redirect to home or logout
-          setTimeout(() => {
-            window.location.href = '/';
-          }, 2000);
-        } else {
-          throw new Error('Account deletion failed');
-        }
-      } catch  {
-        toast.error(t('settings.messages.deleteError'));
-      } finally {
-        setIsLoading(false);
+  const confirmDeleteAccount = async () => {
+    setIsDeleteDialogOpen(false);
+    setIsLoading(true);
+    try {
+      const response = await fetch('/api/settings/delete-account', {
+        method: 'POST',
+      });
+
+      if (response.ok) {
+        toast.success(t('settings.messages.deleteSuccess'));
+        // Redirect to home or logout
+        setTimeout(() => {
+          window.location.href = '/';
+        }, 2000);
+      } else {
+        throw new Error('Account deletion failed');
       }
+    } catch  {
+      toast.error(t('settings.messages.deleteError'));
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -343,10 +352,7 @@ export default function SettingsPage() {
                   <div>
                     <p className="font-medium">{t('settings.language.language')}</p>
                     <p className="text-sm text-muted-foreground">
-                      {language === 'en' && 'English (US)'}
-                      {language === 'fr' && 'Français (FR)'}
-                      {language === 'es' && 'Español (ES)'}
-                      {language === 'ar' && 'العربية (MA)'}
+                      {t('settings.language.english')}
                     </p>
                   </div>
                   <Button variant="outline" size="sm" onClick={handleLanguageChange}>
@@ -397,6 +403,46 @@ export default function SettingsPage() {
           </div>
         </div>
       </div>
+      {/* Logout Dialog */}
+      <Dialog open={isLogoutDialogOpen} onOpenChange={setIsLogoutDialogOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>{t('settings.security.confirmLogoutAll')}</DialogTitle>
+            <DialogDescription>
+              {t('settings.security.confirmLogoutAllDesc')}
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setIsLogoutDialogOpen(false)}>
+              {t('common.cancel')}
+            </Button>
+            <Button variant="destructive" onClick={confirmLogoutAllSessions}>
+              {t('settings.security.logoutAll')}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Delete Account Dialog */}
+      <Dialog open={isDeleteDialogOpen} onOpenChange={setIsDeleteDialogOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>{t('settings.account.confirmDelete')}</DialogTitle>
+            <DialogDescription>
+              {t('settings.account.confirmDeleteDesc')}
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setIsDeleteDialogOpen(false)}>
+              {t('common.cancel')}
+            </Button>
+            <Button variant="destructive" onClick={confirmDeleteAccount}>
+              {t('settings.account.deleteAccount')}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
       <Toaster />
     </div>
   );

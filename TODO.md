@@ -1,14 +1,10 @@
-# Admin Dashboard Implementation
-
-## Pending Tasks
-- [ ] Create admin dashboard page at /admin with email-based access control
-- [ ] Create API endpoint to fetch all users with their interventions/reclamations
-- [ ] Modify export API to support admin export of all users' data
-- [ ] Create admin table component for displaying users and their submissions
-- [ ] Update navigation/sidebar to show admin link for authorized users
-- [ ] Test admin access and functionality
-
-## Completed Tasks
-- [x] Analyze existing codebase and understand structure
-- [x] Review export API, dashboard, and models
-- [x] Plan implementation approach
+- [x] Import Dialog components into src/app/settings/page.tsx
+- [x] Add state variables for dialog open/close
+- [x] Replace confirm() in handleLogoutAllSessions with dialog open
+- [x] Replace confirm() in handleDeleteAccount with dialog open
+- [x] Add Dialog JSX for logout confirmation
+- [x] Add Dialog JSX for delete account confirmation
+- [x] Add missing translation keys for dialog messages in all language files
+- [x] Fix hydration error by using translation keys for language display
+- [x] Fix ESLint errors in src/lib/security.ts
+- [ ] Test the dialogs in the app
