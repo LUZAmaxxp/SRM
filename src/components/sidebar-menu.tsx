@@ -11,7 +11,7 @@ interface SidebarMenuProps {
   onSectionChange?: (section: 'overview' | 'interventions' | 'reclamations' | 'records' | 'admin') => void;
 }
 
-export default function SidebarMenu({ activeSection, onSectionChange }: SidebarMenuProps) {
+export default function SidebarMenu({ activeSection }: SidebarMenuProps) {
   const router = useRouter();
   const { t } = useTranslation();
   const [isAdmin, setIsAdmin] = useState(false);
