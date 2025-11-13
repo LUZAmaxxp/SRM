@@ -1,10 +1,1 @@
-- [x] Import Dialog components into src/app/settings/page.tsx
-- [x] Add state variables for dialog open/close
-- [x] Replace confirm() in handleLogoutAllSessions with dialog open
-- [x] Replace confirm() in handleDeleteAccount with dialog open
-- [x] Add Dialog JSX for logout confirmation
-- [x] Add Dialog JSX for delete account confirmation
-- [x] Add missing translation keys for dialog messages in all language files
-- [x] Fix hydration error by using translation keys for language display
-- [x] Fix ESLint errors in src/lib/security.ts
-- [ ] Test the dialogs in the app
+
