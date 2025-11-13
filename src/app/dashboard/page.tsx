@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState, useCallback } from 'react';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Plus, FileText, AlertTriangle, Calendar, Users, MapPin } from 'lucide-react';
@@ -45,6 +45,7 @@ export default function DashboardPage() {
   const [authenticated, setAuthenticated] = useState(false);
   const [activeSection, setActiveSection] = useState<'overview' | 'interventions' | 'reclamations' | 'records' | 'admin'>('overview');
   const router = useRouter();
+  const searchParams = useSearchParams();
   const { t } = useTranslation();
 
   const handleExport = () => {
@@ -70,6 +71,13 @@ export default function DashboardPage() {
 
     checkAuth();
   }, [router]);
+
+  useEffect(() => {
+    const section = searchParams.get('section');
+    if (section && ['overview', 'interventions', 'reclamations', 'records', 'admin'].includes(section)) {
+      setActiveSection(section as 'overview' | 'interventions' | 'reclamations' | 'records' | 'admin');
+    }
+  }, [searchParams]);
 
   const fetchRecords = useCallback(async () => {
     if (!authenticated) return;
