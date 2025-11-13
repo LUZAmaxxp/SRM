@@ -34,7 +34,13 @@ export async function GET(request: NextRequest) {
     const records = [...interventions, ...reclamations]
       .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
 
-    return NextResponse.json(records);
+    // Add user name to each record
+    const recordsWithUserNames = records.map(record => ({
+      ...record,
+      userName: session.user.name || 'N/A'
+    }));
+
+    return NextResponse.json(recordsWithUserNames);
 
   } catch (error) {
     console.error('Error fetching records:', error);

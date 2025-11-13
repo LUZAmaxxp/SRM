@@ -7,6 +7,10 @@ const InterventionSchema = new mongoose.Schema({
     required: true,
     ref: 'User' // Reference to BetterAuth User
   },
+  userName: {
+    type: String,
+    required: true
+  },
   type: {
     type: String,
     default: 'intervention',
@@ -57,6 +61,10 @@ const ReclamationSchema = new mongoose.Schema({
     type: String,
     required: true,
     ref: 'User' // Reference to BetterAuth User
+  },
+  userName: {
+    type: String,
+    required: true
   },
   type: {
     type: String,

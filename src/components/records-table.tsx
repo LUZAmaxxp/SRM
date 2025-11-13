@@ -13,6 +13,7 @@ interface Record {
   _id: string;
   type: 'intervention' | 'reclamation';
   createdAt: string;
+  userName?: string;
   // Intervention fields
   startDate?: string;
   endDate?: string;

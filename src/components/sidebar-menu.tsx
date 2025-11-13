@@ -20,7 +20,7 @@ export default function SidebarMenu({ activeSection, onSectionChange }: SidebarM
     const checkAdminStatus = async () => {
       try {
         const session = await authClient.getSession();
-        console.log('Session data:', session); // Debug log
+        
         if (session && session.data && session.data.user && session.data.user.email) {
           const userEmail = session.data.user.email;
           // Check admin status via API instead of direct import
@@ -34,7 +34,7 @@ export default function SidebarMenu({ activeSection, onSectionChange }: SidebarM
           const data = await response.json();
           setIsAdmin(data.success || false);
         } else {
-          console.log('No session or user data found'); // Debug log
+      
           setIsAdmin(false);
         }
       } catch (error) {

@@ -3,10 +3,69 @@ import { auth } from '@/lib/auth';
 import dbConnect from '@/lib/db';
 import { Intervention } from '@/lib/models';
 import { generateInterventionDoc } from '@/lib/docx-generator';
-import { Resend } from 'resend';
+import { emailService } from '@/lib/email-service';
 import { checkRateLimit } from '@/lib/rate-limiter';
 
-const resend = new Resend(process.env.RESEND_API_KEY || 'dummy-key');
+export async function GET(request: NextRequest) {
+  const { searchParams } = new URL(request.url);
+  const isAdmin = searchParams.get('admin') === 'true';
+
+  try {
+    // Check authentication
+    const session = await auth.api.getSession({
+      headers: request.headers
+    });
+
+    if (!session) {
+      return NextResponse.json(
+        { error: 'Unauthorized' },
+        { status: 401 }
+      );
+    }
+
+    // Check admin access if admin request
+    if (isAdmin) {
+      const { isAdminEmail } = await import('@/lib/admin-config');
+      const isAdminUser = await isAdminEmail(session.user.email);
+      if (!isAdminUser) {
+        return NextResponse.json(
+          { error: 'Access denied. Admin privileges required.' },
+          { status: 403 }
+        );
+      }
+    }
+
+    // Connect to database
+    await dbConnect();
+
+    let interventions;
+    if (isAdmin) {
+      // Fetch all interventions for admin (userName is already stored in the document)
+      interventions = await Intervention.find({})
+        .sort({ createdAt: -1 })
+        .lean();
+    } else {
+      // Fetch interventions for current user
+      interventions = await Intervention.find({ userId: session.user.id })
+        .sort({ createdAt: -1 })
+        .lean();
+    }
+
+    return NextResponse.json({
+      success: true,
+      data: interventions
+    });
+
+  } catch (error) {
+    console.error('Error fetching interventions:', error);
+    return NextResponse.json(
+      { error: 'Internal server error' },
+      { status: 500 }
+    );
+  }
+}
+
+
 
 export async function POST(request: NextRequest) {
   try {
@@ -76,6 +135,7 @@ export async function POST(request: NextRequest) {
     // Create new intervention (use the correct schema fields)
     const intervention = new Intervention({
       userId: session.user.id,
+      userName: session.user.name || 'N/A',
       startDate: new Date(startDate),
       endDate: new Date(endDate),
       entrepriseName,
@@ -107,29 +167,21 @@ export async function POST(request: NextRequest) {
 
     const docxBuffer = await generateInterventionDoc(docxData);
 
-    // Send email with attachment (only if API key is available)
-    if (process.env.RESEND_API_KEY && process.env.RESEND_API_KEY !== 'dummy-key') {
-      const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
-      const fileName = `Intervention_Report_${timestamp}.docx`;
+    // Send email with attachment using SMTP
+    const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
+    const fileName = `Intervention_Report_${timestamp}.docx`;
 
-      try {
-        await resend.emails.send({
-          from: 'noreply@srm-sm.com',
-          to: recipientEmails,
-          subject: `New Intervention Report - ${siteName}`,
-          text: 'Please find the attached intervention report.',
-          attachments: [
-            {
-              filename: fileName,
-              content: docxBuffer.toString('base64'),
-              contentType: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
-            },
-          ],
-        });
-      } catch (emailError) {
-        console.error('Error sending email:', emailError);
-        // Don't fail the request if email fails, just log it
-      }
+    const emailSent = await emailService.sendReportEmail(
+      recipientEmails,
+      `New Intervention Report - ${siteName}`,
+      docxBuffer,
+      fileName,
+      'intervention'
+    );
+
+    if (!emailSent) {
+      console.error('Failed to send intervention report email');
+      // Don't fail the request if email fails, just log it
     }
 
     return NextResponse.json({

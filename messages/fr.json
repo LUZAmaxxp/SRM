@@ -10,7 +10,8 @@
     "success": "Succès",
     "confirm": "Confirmer",
     "yes": "Oui",
-    "no": "Non"
+    "no": "Non",
+    "view": "Voir"
   },
   "navigation": {
     "dashboard": "Tableau de bord",
@@ -108,7 +109,9 @@
       "exportData": "Exporter les données",
       "deleteAccount": "Supprimer le compte",
       "exporting": "Exportation...",
-      "deleting": "Suppression..."
+      "deleting": "Suppression...",
+      "confirmDelete": "Confirmer la suppression du compte",
+      "confirmDeleteDesc": "Êtes-vous sûr de vouloir supprimer votre compte ? Cette action ne peut pas être annulée."
     },
     "messages": {
       "settingEnabled": "{{setting}} activé",
@@ -254,7 +257,8 @@
     "form-first-name": "Prénom",
     "form-first-name-placeholder": "Saisir votre prénom",
     "form-last-name": "Nom de Famille",
-    "form-last-name-placeholder": "Saisir votre nom de famille"
+    "form-last-name-placeholder": "Saisir votre nom de famille",
+    "form-confirm-password-placeholder": "Confirmer le mot de passe"
   },
   "sign-up": {
     "success": "Compte créé avec succès ! Veuillez vérifier votre e-mail pour confirmer votre compte.",
@@ -338,6 +342,9 @@
    "total-interventions": "Total des Interventions",
    "total-reclamations": "Total des Réclamations",
    "active-users-month": "Utilisateurs Actifs (Ce Mois)",
+   "users": "Utilisateurs",
+   "all-interventions": "Toutes les Interventions",
+   "all-reclamations": "Toutes les Réclamations",
    "users-overview": "Aperçu des Utilisateurs",
    "no-users-found": "Aucun utilisateur trouvé",
    "no-user-data": "Aucune donnée utilisateur disponible",
@@ -381,34 +388,23 @@
    "type": "Type",
    "date": "Date",
    "description": "Description",
-   "and-more": "... et {{count}} de plus"
+   "and-more": "... et {{count}} de plus",
+   "delete" : "Supprimer",
+  "no-records-found": "Aucun enregistrement trouvé",
+  "confirm-delete": "Voulez-vous vraiment supprimer cet enregistrement?",
+  "delete-success": "Enregistrement supprimé avec succès !",
+  "delete-error": "Échec de la suppression de l'enregistrement",
+  "delete-failed": "Une erreur s'est produite lors de la suppression de l'enregistrement",
+  "confirm-delete-message": "Voulez-vous vraiment supprimer cet enregistrement?",
+  "cancel": "Annuler"
+
   },
-  "records": {
-    "all-records": "Tous les Enregistrements",
-    "manage-desc": "Gérer et afficher tous les enregistrements d'intervention et de réclamation",
-    "export-excel": "Exporter vers Excel",
-    "records-overview": "Aperçu des Enregistrements",
-    "no-records-found": "Aucun enregistrement trouvé",
-    "create-first": "Créez votre première intervention ou réclamation pour commencer.",
-    "intervention-details": "Détails de l'Intervention",
-    "reclamation-details": "Détails de la Réclamation",
-    "company-name": "Nom de l'Entreprise",
-    "responsible-person": "Personne Responsable",
-    "site-name": "Nom du Site",
-    "start-date": "Date de Début",
-    "end-date": "Date de Fin",
-    "team-members": "Membres de l'Équipe",
-    "photo": "Photo",
-    "intervention-photo": "Photo de l'Intervention",
-    "station-name": "Nom de la Station",
-    "reclamation-type": "Type de Réclamation",
-    "date": "Date",
-    "description": "Description",
-    "reclamation-photo": "Photo de la Réclamation",
-    "recipient-emails": "E-mails des Destinataires",
-    "created-at": "Créé le"
-  },
+  
   "table": {
+    "id": "ID",
+    "user": "Utilisateur",
+    "date": "Date",
+    "actions": "Actions",
     "type": "Type",
     "company-station": "Entreprise/Station",
     "responsible-person": "Personne Responsable",
@@ -443,18 +439,6 @@
     "description": "Description",
     "reclamation-photo": "Photo de la Réclamation",
     "recipient-emails": "E-mails des Destinataires",
-    "created-at": "Créé le"
-  },
-  "table": {
-    "type": "Type",
-    "company-station": "Entreprise/Station",
-    "responsible-person": "Personne Responsable",
-    "date-range": "Période",
-    "site-type": "Site/Type",
-    "team-members": "Membres de l'Équipe",
-    "description": "Description",
-    "photo": "Photo",
-    "recipients": "Destinataires",
     "created-at": "Créé le"
   }
 }
