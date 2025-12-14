@@ -20,7 +20,7 @@ export async function middleware(request: NextRequest) {
     try {
       // Get session from better-auth
       const session = await auth.api.getSession({
-        headers: request.headers,
+        headers: Object.fromEntries(request.headers.entries()),
       });
 
       if (!session) {

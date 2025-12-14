@@ -1,7 +1,13 @@
-# Upgrade Next.js to Latest Version
+# TODO
 
-- [x] Update Next.js version in package.json from ^15.5.6 to ^16.0.10
-- [x] Update eslint-config-next to compatible version
-- [ ] Run npm install to update dependencies
-- [ ] Test the build with npm run build
-- [ ] Verify the application runs correctly with npm run dev
+## Fixed Vercel Deployment Issue
+- [x] Updated baseURL in auth.ts to use VERCEL_URL for production
+- [x] Fixed middleware headers format for better-auth compatibility
+
+## Next Steps
+- [ ] Deploy to Vercel and test
+- [ ] Ensure environment variables are set in Vercel:
+  - MONGODB_URI
+  - BETTER_AUTH_SECRET
+  - BETTER_AUTH_URL (should be set automatically via VERCEL_URL)
+  - SMTP settings

@@ -361,7 +361,7 @@ Need help? Contact us at  allouchayman21@gmail.com
   secret:
     process.env.BETTER_AUTH_SECRET ||
     "your-super-secret-key-here-minimum-32-characters-for-testing",
-  baseURL: process.env.BETTER_AUTH_URL || "http://localhost:3000",
+  baseURL: process.env.BETTER_AUTH_URL || (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : "http://localhost:3000"),
 });
 
 console.log("Better-auth initialized successfully");
